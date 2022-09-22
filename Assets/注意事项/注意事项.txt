@@ -1,0 +1,19 @@
+1，为实现层级关系，在 ProjectSettings-Graphics-Transparency Sort Mode=Custom Axis
+							      Transparency Sort Axis=0 1 0
+    并将 sprite 的锚点设置为 bottom，SpriteRenderer-SpriteSortPoint=Pivot
+    则会根据两张图的Y轴决定谁显示在上方
+									        
+2，UI-Button 若要设置透明部分不可被点击，需要将该图片的 read/write 勾选
+
+3，自定义 attribute 脚本不能放在 Editor 文件夹里
+
+4，HashSet.Contains 效率高于 List.Contains，但 .Add 效率落后，侧重于查询是否存在时，HashSet综合效率更高
+    HashSet中不会出现重复的项
+
+5，当一个 class：IComparable，则这个 class类型的 List可以使用 Sort() 排序
+    根据实现 IComparable 中的方法 int CompareTo(T other) 的规则
+    
+6，在运行时更改动画片段，使用 animationOverrideController
+    官方案例：https://docs.unity3d.com/ScriptReference/AnimatorOverrideController.html
+    
+7，Physics2D.OverlapBox 除了会检测 collider也会检测 trigger，如果不想让一个 trigger被检测，可以将它的 Layer设置为 Ignore Raycast（例如每个地图的 Bounds）
