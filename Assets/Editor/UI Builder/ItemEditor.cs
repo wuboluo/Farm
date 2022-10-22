@@ -12,13 +12,15 @@ public class ItemEditor : EditorWindow
 
     // 默认图标
     private Sprite defaultIcon;
-    private VisualElement iconPreview;
-    private ScrollView itemDetailsSection;
+    
     private List<ItemDetails> itemList = new();
 
     // 获得 VisualElement
     private ListView itemListView;
+    private ScrollView itemDetailsSection;
+    private VisualElement iconPreview;
 
+    // 列表处道具模板
     private VisualTreeAsset itemRowTemplate;
 
     public void CreateGUI()
