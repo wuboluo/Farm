@@ -31,7 +31,7 @@ namespace Y.Inventory
 
         private void Start()
         {
-            for (var i = 0; i < playerSlots.Length; i++) playerSlots[i].slotIndex = i;
+            for (int i = 0; i < playerSlots.Length; i++) playerSlots[i].slotIndex = i;
 
             bagOpened = bagUI.activeInHierarchy;
             playerMoney.text = InventoryManager.Instance.playerMoney.ToString();
@@ -75,7 +75,7 @@ namespace Y.Inventory
 
         private void OnBaseBagOpen(SlotType slotType, InventoryBagSO bagSO)
         {
-            var prefab = slotType switch
+            GameObject prefab = slotType switch
             {
                 SlotType.Shop => shopSlotPrefab,
                 SlotType.Box => boxSlotPrefab,
@@ -86,9 +86,9 @@ namespace Y.Inventory
             baseBag.SetActive(true);
 
             baseBagSlots = new List<SlotUI>();
-            for (var i = 0; i < bagSO.itemList.Count; i++)
+            for (int i = 0; i < bagSO.itemList.Count; i++)
             {
-                var slot = Instantiate(prefab, baseBag.transform.GetChild(0)).GetComponent<SlotUI>();
+                SlotUI slot = Instantiate(prefab, baseBag.transform.GetChild(0)).GetComponent<SlotUI>();
                 slot.slotIndex = i;
                 baseBagSlots.Add(slot);
             }
@@ -115,7 +115,7 @@ namespace Y.Inventory
 
             UpdateSlotHighlight(-1);
 
-            foreach (var slot in baseBagSlots)
+            foreach (SlotUI slot in baseBagSlots)
             {
                 Destroy(slot.gameObject);
             }
@@ -137,10 +137,10 @@ namespace Y.Inventory
             switch (location)
             {
                 case InventoryLocation.Player:
-                    for (var i = 0; i < playerSlots.Length; i++)
+                    for (int i = 0; i < playerSlots.Length; i++)
                         if (list[i].itemAmount > 0)
                         {
-                            var item = InventoryManager.Instance.GetItemDetails(list[i].itemID);
+                            ItemDetails item = InventoryManager.Instance.GetItemDetails(list[i].itemID);
                             playerSlots[i].UpdateSlot(item, list[i].itemAmount);
                         }
                         else
@@ -151,10 +151,10 @@ namespace Y.Inventory
                     break;
 
                 case InventoryLocation.Box:
-                    for (var i = 0; i < baseBagSlots.Count; i++)
+                    for (int i = 0; i < baseBagSlots.Count; i++)
                         if (list[i].itemAmount > 0)
                         {
-                            var item = InventoryManager.Instance.GetItemDetails(list[i].itemID);
+                            ItemDetails item = InventoryManager.Instance.GetItemDetails(list[i].itemID);
                             baseBagSlots[i].UpdateSlot(item, list[i].itemAmount);
                         }
                         else
@@ -178,7 +178,7 @@ namespace Y.Inventory
         // 更新 slot高亮显示
         public void UpdateSlotHighlight(int index)
         {
-            foreach (var slot in playerSlots)
+            foreach (SlotUI slot in playerSlots)
                 if (slot.isSelected && slot.slotIndex == index)
                 {
                     slot.slotHighlight.gameObject.SetActive(true);

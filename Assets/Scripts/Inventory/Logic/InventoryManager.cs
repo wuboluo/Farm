@@ -5,26 +5,26 @@ using Y.Save;
 
 namespace Y.Inventory
 {
-    public class InventoryManager : Singleton<InventoryManager>, ISaveable
+    public class InventoryManager : Singleton<InventoryManager>, ISavable
     {
         [Header("物品数据")] public ItemDataListSO itemDataListSO;
 
         [Header("建造蓝图")] public BluePrintListSO bluePrintData;
 
-        [Header("背包数据")]
-        public InventoryBagSO playerBagTemp;
+        [Header("背包数据")] public InventoryBagSO playerBagTemp;
         public InventoryBagSO playerBag;
         private InventoryBagSO currentBoxBag;
 
         [Header("金钱")] public int playerMoney;
 
-        private Dictionary<string, List<InventoryItem>> boxDataDict = new();
+        private readonly Dictionary<string, List<InventoryItem>> boxDataDict = new();
         public int BoxDataAmount => boxDataDict.Count;
 
         private void Start()
         {
-            ISaveable saveable = this;
-            saveable.RegisterSaveable();
+            // 注册此类中的数据需要被保存
+            ISavable savable = this;
+            savable.RegisterSavable();
 
             // EventHandler.CallUpdateInventoryUI(InventoryLocation.Player, playerBag.itemList);
         }
@@ -47,33 +47,35 @@ namespace Y.Inventory
             EventHandler.StartNewGameEvent -= OnStartNewGameEvent;
         }
 
+        ///  新建游戏时，重置背包、储物箱和金钱
         private void OnStartNewGameEvent(int index)
         {
             playerBag = Instantiate(playerBagTemp);
             playerMoney = Settings.playerStartMoney;
-            
+
             boxDataDict.Clear();
             EventHandler.CallUpdateInventoryUI(InventoryLocation.Player, playerBag.itemList);
         }
 
+        /// 根据蓝图制作家具时，从背包中扣除对应种类和数量的材料
         private void OnBuildFurniture(int id, Vector3 pos)
         {
             RemoveItem(id, 1);
-            var bluePrint = bluePrintData.GetBluePrintDetails(id);
+            BluePrintDetails bluePrint = bluePrintData.GetBluePrintDetails(id);
 
-            foreach (var item in bluePrint.resourceItem)
+            foreach (InventoryItem item in bluePrint.resourceItem)
             {
                 RemoveItem(item.itemID, item.itemAmount);
             }
         }
 
+        /// 打开箱子时，更新为当前访问的箱子数据（可能是背包、储物箱或商人的货架等）
         private void OnBaseBoxBagOpen(SlotType slotType, InventoryBagSO bagSO)
         {
             currentBoxBag = bagSO;
         }
 
-        /// 根据位置返回背包数据列表
-        /// <returns></returns>
+        /// 根据仓库类型获取物品列表
         private List<InventoryItem> GetItemList(InventoryLocation location)
         {
             return location switch
@@ -84,18 +86,18 @@ namespace Y.Inventory
             };
         }
 
-        // 通过 id返回物品信息
+        /// 通过ID查找物品信息，范围为所有配置过的物品
         public ItemDetails GetItemDetails(int id)
         {
             return itemDataListSO.itemDetailsList.Find(r => r.itemID == id);
         }
 
-        // 添加物品到背包
+        /// 添加物品到背包
         public void AddItem(Item item, bool toDestroy)
         {
-            // 背包是否已存在此物品
-            var index = GetItemIndexInBag(item.itemID);
-            // 添加进背包里
+            // 检查背包是否已存在此物品
+            int index = GetItemIndexInBag(item.itemID);
+            // 添加进背包里，如果背包不存在此物品，先检查是否有空位
             AddItemAtIndex(item.itemID, index, 1);
 
             if (toDestroy) Destroy(item.gameObject);
@@ -104,37 +106,46 @@ namespace Y.Inventory
             EventHandler.CallUpdateInventoryUI(InventoryLocation.Player, playerBag.itemList);
         }
 
-        // 通过物品 ID找到此物品在背包中序号，没有则返回 -1
+        /// 通过物品 ID找到此物品在背包中序号，没有则返回 -1
         private int GetItemIndexInBag(int id)
         {
-            for (var i = 0; i < playerBag.itemList.Count; i++)
-                if (playerBag.itemList[i].itemID == id)
-                    return i;
+            for (int i = 0; i < playerBag.itemList.Count; i++)
+            {
+                if (playerBag.itemList[i].itemID == id) return i;
+            }
 
             return -1;
         }
 
-        // 检查背包是否有空位
+        /// 检查背包是否有空位
         private bool CheckBagCapacity()
         {
-            for (var i = 0; i < playerBag.itemList.Count; i++)
-                if (playerBag.itemList[i].itemID == 0)
-                    return true;
+            for (int i = 0; i < playerBag.itemList.Count; i++)
+            {
+                if (playerBag.itemList[i].itemID == 0) return true;
+            }
 
             return false;
         }
 
-        // 在背包指定序号添加物品
+        /// 在背包指定序号添加物品
         private void AddItemAtIndex(int id, int index, int amount)
         {
             // 如果背包没有这个物品，并且还有富余的容量
-            if (index == -1 && CheckBagCapacity())
+            if (index == -1)
             {
+                // 如果还没有空位，无法添加
+                if (!CheckBagCapacity())
+                {
+                    Debug.Log("背包中没有和要被添加的一样的物品，且没有多余的空位，无法添加");
+                    return;
+                }
+
                 // 创建一个这个物品
-                var item = new InventoryItem {itemID = id, itemAmount = amount};
+                InventoryItem item = new InventoryItem { itemID = id, itemAmount = amount };
 
                 // 找到背包的一个空位，添加进去
-                for (var i = 0; i < playerBag.itemList.Count; i++)
+                for (int i = 0; i < playerBag.itemList.Count; i++)
                 {
                     if (playerBag.itemList[i].itemID != 0) continue;
 
@@ -145,18 +156,18 @@ namespace Y.Inventory
             // 如果背包有这个物品
             else
             {
-                var currentAmount = playerBag.itemList[index].itemAmount + amount;
+                int currentAmount = playerBag.itemList[index].itemAmount + amount;
 
-                var item = new InventoryItem {itemID = id, itemAmount = currentAmount};
+                InventoryItem item = new InventoryItem { itemID = id, itemAmount = currentAmount };
                 playerBag.itemList[index] = item;
             }
         }
 
-        // 交换物品位置
+        /// 交换物品位置（背包内）
         public void SwapItem(int from, int to)
         {
-            var currentItem = playerBag.itemList[from];
-            var targetItem = playerBag.itemList[to];
+            InventoryItem currentItem = playerBag.itemList[from];
+            InventoryItem targetItem = playerBag.itemList[to];
 
             if (targetItem.itemID != 0)
             {
@@ -176,19 +187,20 @@ namespace Y.Inventory
             AssetDatabase.SaveAssets();
         }
 
+        /// 交换物品位置（背包和储物箱）
         public void SwapItem(InventoryLocation locationFrom, int fromIndex, InventoryLocation locationTarget, int targetIndex)
         {
             // 获取当前和目标的 背包/箱子 的列表
-            var currentList = GetItemList(locationFrom);
-            var targetList = GetItemList(locationTarget);
+            List<InventoryItem> currentList = GetItemList(locationFrom);
+            List<InventoryItem> targetList = GetItemList(locationTarget);
 
             // 获取当前要移动的物品
-            var currentItem = currentList[fromIndex];
+            InventoryItem currentItem = currentList[fromIndex];
 
             if (targetIndex < targetList.Count)
             {
                 // 想被交换的物品（可能为空）
-                var targetItem = targetList[targetIndex];
+                InventoryItem targetItem = targetList[targetIndex];
 
                 // 目标格子物品不为空，且与被交换的物品不一样，则两个物品交换位置
                 if (targetItem.itemID != 0 && currentItem.itemID != targetItem.itemID)
@@ -216,21 +228,21 @@ namespace Y.Inventory
             }
         }
 
-        // 移除指定数量的背包物品
+        /// 移除指定数量的背包物品
         private void RemoveItem(int id, int removeAmount)
         {
-            var index = GetItemIndexInBag(id);
+            int index = GetItemIndexInBag(id);
             if (playerBag.itemList[index].itemAmount > removeAmount)
             {
                 // 算出剩余的物品数量
-                var amount = playerBag.itemList[index].itemAmount - removeAmount;
+                int amount = playerBag.itemList[index].itemAmount - removeAmount;
                 // 创建一个新的 item，设置为剩余数量的之前的 item，覆盖到背包对应位置
-                var item = new InventoryItem {itemID = id, itemAmount = amount};
+                InventoryItem item = new InventoryItem { itemID = id, itemAmount = amount };
                 playerBag.itemList[index] = item;
             }
             else if (playerBag.itemList[index].itemAmount == removeAmount)
             {
-                var item = new InventoryItem();
+                InventoryItem item = new InventoryItem();
                 playerBag.itemList[index] = item;
             }
 
@@ -238,18 +250,17 @@ namespace Y.Inventory
             EventHandler.CallUpdateInventoryUI(InventoryLocation.Player, playerBag.itemList);
         }
 
-
-        // 扔东西
+        /// 扔东西
         private void OnCallDropItem(int id, Vector3 pos, ItemType itemType)
         {
             RemoveItem(id, 1);
         }
 
-
+        /// 玩家收集某物品时，放到背包里
         private void OnHarvestAtPlayerPosition(int id)
         {
             // 背包是否已存在此物品
-            var index = GetItemIndexInBag(id);
+            int index = GetItemIndexInBag(id);
             // 添加进背包里
             AddItemAtIndex(id, index, 1);
 
@@ -260,10 +271,10 @@ namespace Y.Inventory
         /// 交易物品
         public void TradeItem(ItemDetails details, int amount, bool isSell)
         {
-            var cost = details.itemPrice * amount;
+            int cost = details.itemPrice * amount;
 
             // 获得物品背包位置
-            var index = GetItemIndexInBag(details.itemID);
+            int index = GetItemIndexInBag(details.itemID);
 
             // 卖
             if (isSell)
@@ -274,7 +285,7 @@ namespace Y.Inventory
                     // 从背包移除
                     RemoveItem(details.itemID, amount);
                     // 卖出总价
-                    cost = (int) (cost * details.sellPercentage);
+                    cost = (int)(cost * details.sellPercentage);
                     // 增加余额
                     playerMoney += cost;
                 }
@@ -293,14 +304,14 @@ namespace Y.Inventory
             EventHandler.CallUpdateInventoryUI(InventoryLocation.Player, playerBag.itemList);
         }
 
-        /// 检查建造资源物品库存（id：图纸id）
+        /// 检查建造资源物品库存（bluePrintID：图纸id）
         public bool CheckStock(int bluePrintID)
         {
-            var bluePrintDetails = bluePrintData.GetBluePrintDetails(bluePrintID);
+            BluePrintDetails bluePrintDetails = bluePrintData.GetBluePrintDetails(bluePrintID);
 
-            foreach (var resourceItem in bluePrintDetails.resourceItem)
+            foreach (InventoryItem resourceItem in bluePrintDetails.resourceItem)
             {
-                var itemStock = playerBag.GetInventoryItem(resourceItem.itemID);
+                InventoryItem itemStock = playerBag.GetInventoryItem(resourceItem.itemID);
                 if (itemStock.itemAmount >= resourceItem.itemAmount) continue;
 
                 return false;
@@ -318,27 +329,28 @@ namespace Y.Inventory
         /// 加入箱子数据
         public void AddBoxDataDict(Box box)
         {
-            var key = box.name + box.index;
+            string key = box.name + box.index;
             if (!boxDataDict.ContainsKey(key))
             {
                 boxDataDict.Add(key, box.boxBagData.itemList);
             }
-
-            print("box key: " + key);
         }
 
-        public string GUID => GetComponent<DataGUID>().guid;
+        /// 统计各个仓库的数据，导出保存
         public GameSaveData GenerateSaveData()
         {
-            var saveData = new GameSaveData();
-            saveData.playerMoney = playerMoney;
+            GameSaveData saveData = new GameSaveData
+            {
+                playerMoney = playerMoney,
+                inventoryDict = new Dictionary<string, List<InventoryItem>>
+                {
+                    // 把人物背包的信息存储进去
+                    { playerBag.name, playerBag.itemList }
+                }
+            };
 
-            saveData.inventoryDict = new Dictionary<string, List<InventoryItem>>();
-            
-            // 把人物背包的信息存储进去
-            saveData.inventoryDict.Add(playerBag.name, playerBag.itemList);
             // 把所有的箱子所保存的物体信息都存储进去
-            foreach (var (key, value) in boxDataDict)
+            foreach ((string key, List<InventoryItem> value) in boxDataDict)
             {
                 saveData.inventoryDict.Add(key, value);
             }
@@ -346,13 +358,14 @@ namespace Y.Inventory
             return saveData;
         }
 
+        /// 各个仓库恢复数据
         public void RestoreData(GameSaveData saveData)
         {
             playerMoney = saveData.playerMoney;
             playerBag = Instantiate(playerBagTemp);
             playerBag.itemList = saveData.inventoryDict[playerBag.name];
-            
-            foreach (var (key, value) in saveData.inventoryDict)
+
+            foreach ((string key, List<InventoryItem> value) in saveData.inventoryDict)
             {
                 // 如果场景中有之前进度中保存的这个箱子
                 if (boxDataDict.ContainsKey(key))
@@ -363,5 +376,7 @@ namespace Y.Inventory
 
             EventHandler.CallUpdateInventoryUI(InventoryLocation.Player, playerBag.itemList);
         }
+
+        public string GUID => GetComponent<DataGUID>().guid;
     }
 }

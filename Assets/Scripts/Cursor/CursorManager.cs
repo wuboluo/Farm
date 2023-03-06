@@ -150,7 +150,7 @@ public class CursorManager : MonoBehaviour
         buildImage.rectTransform.position = Input.mousePosition;
 
         // 获取人物的网格坐标
-        var playerGridPos = currentGrid.WorldToCell(PlayerTransform.position);
+        Vector3Int playerGridPos = currentGrid.WorldToCell(PlayerTransform.position);
 
         // 判断是否在物品适用范围内
         if (Mathf.Abs(mouseGridPos.x - playerGridPos.x) > currentItem.itemUseRadius || Mathf.Abs(mouseGridPos.y - playerGridPos.y) > currentItem.itemUseRadius)
@@ -161,13 +161,13 @@ public class CursorManager : MonoBehaviour
         }
 
         // 获取当前鼠标位置所在的网格
-        var currentTile = GridMapManager.Instance.GetTileDetailsOnMousePosition(mouseGridPos);
-        var crop = GridMapManager.Instance.GetCropObject(mouseWorldPos);
+        TileDetails currentTile = GridMapManager.Instance.GetTileDetailsOnMousePosition(mouseGridPos);
+        Crop crop = GridMapManager.Instance.GetCropObject(mouseWorldPos);
 
         // 网格不为空
         if (currentTile != null)
         {
-            var currentCrop = CropManager.Instance.GetCropDetails(currentTile.seedItemID);
+            CropDetails currentCrop = CropManager.Instance.GetCropDetails(currentTile.seedItemID);
 
             switch (currentItem.itemType)
             {
@@ -235,7 +235,7 @@ public class CursorManager : MonoBehaviour
 
                 case ItemType.Furniture:
                     buildImage.gameObject.SetActive(true);
-                    var bluePrintDetails = InventoryManager.Instance.bluePrintData.GetBluePrintDetails(currentItem.itemID);
+                    BluePrintDetails bluePrintDetails = InventoryManager.Instance.bluePrintData.GetBluePrintDetails(currentItem.itemID);
 
                     if (currentTile.canPlaceFurniture && InventoryManager.Instance.CheckStock(currentItem.itemID) && !HaveFurnitureInRadius(bluePrintDetails))
                         SetCursorValid();
@@ -253,11 +253,11 @@ public class CursorManager : MonoBehaviour
 
     private bool HaveFurnitureInRadius(BluePrintDetails bluePrintDetails)
     {
-        var buildItem = bluePrintDetails.buildPrefab;
+        GameObject buildItem = bluePrintDetails.buildPrefab;
         Vector2 point = mouseWorldPos;
-        var size = buildItem.GetComponent<BoxCollider2D>().size;
+        Vector2 size = buildItem.GetComponent<BoxCollider2D>().size;
 
-        var otherColl = Physics2D.OverlapBox(point, size, 0);
+        Collider2D otherColl = Physics2D.OverlapBox(point, size, 0);
         if (otherColl != null)
             return otherColl.GetComponent<Furniture>();
         return false;

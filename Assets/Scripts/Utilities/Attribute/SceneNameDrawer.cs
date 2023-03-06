@@ -23,7 +23,7 @@ public class SceneNameDrawer : PropertyDrawer
         if (sceneIndex == -1)
             GetSceneNameArray(property);
 
-        var oldIndex = sceneIndex;
+        int oldIndex = sceneIndex;
 
         // 下拉单格式
         sceneIndex = EditorGUI.Popup(position, label, sceneIndex, sceneNames);
@@ -36,22 +36,22 @@ public class SceneNameDrawer : PropertyDrawer
     private void GetSceneNameArray(SerializedProperty property)
     {
         // 类型为 EditorBuildSettingsScene的数组，此类型存在一个属性为 path，意味着可以返回场景文件在资源文件夹下的目录路径（ *.unity ）
-        var scenes = EditorBuildSettings.scenes;
+        EditorBuildSettingsScene[] scenes = EditorBuildSettings.scenes;
         
         // 初始化数组，把 BuildSettings里存在的场景添加进去
         sceneNames = new GUIContent[scenes.Length];
 
-        for (var i = 0; i < sceneNames.Length; i++)
+        for (int i = 0; i < sceneNames.Length; i++)
         {
             // 获得当前场景的路径
-            var path = scenes[i].path;
+            string path = scenes[i].path;
             
             // 根据 scenePathSplit 为分界，把路径拆分为字符串数组，舍去空白内容
-            var splitPath = path.Split(scenePathSplit, StringSplitOptions.RemoveEmptyEntries);
+            string[] splitPath = path.Split(scenePathSplit, StringSplitOptions.RemoveEmptyEntries);
 
             // 如果 splitPath 长度为 0，就是该场景从 settings 里移除了，避免报空
             // 否则取最后一位：该场景的文件名称（例如：01.Field）
-            var sceneName = splitPath.Length > 0 ? splitPath[^1] : "(Deleted Scene)";
+            string sceneName = splitPath.Length > 0 ? splitPath[^1] : "(Deleted Scene)";
             
             // 给第 i项实例出来
             sceneNames[i] = new GUIContent(sceneName);
@@ -64,10 +64,10 @@ public class SceneNameDrawer : PropertyDrawer
         if (!string.IsNullOrEmpty(property.stringValue))
         {
             // 设置一个临时变量，标记已配置的场景名称是否在 settings的列表中找到
-            var nameFound = false;
+            bool nameFound = false;
 
             // 循环判断，若找到，则返回此场景的序号，并更新标记，结束循环
-            for (var i = 0; i < sceneNames.Length; i++)
+            for (int i = 0; i < sceneNames.Length; i++)
                 if (sceneNames[i].text == property.stringValue)
                 {
                     sceneIndex = i;

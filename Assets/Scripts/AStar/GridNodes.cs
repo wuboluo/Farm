@@ -18,9 +18,9 @@ namespace Y.AStar
 
             gridNode = new Node[width, height];
             
-            for (var x = 0; x < width; x++)
+            for (int x = 0; x < width; x++)
             {
-                for (var y = 0; y < height; y++)
+                for (int y = 0; y < height; y++)
                 {
                     gridNode[x, y] = new Node(new Vector2Int(x, y));
                 }

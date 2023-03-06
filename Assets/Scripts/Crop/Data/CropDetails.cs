@@ -61,7 +61,7 @@ public class CropDetails
     /// 获得工具需要使用的次数
     public int GetTotalRequireCount(int toolID)
     {
-        for (var i = 0; i < harvestToolItemID.Length; i++)
+        for (int i = 0; i < harvestToolItemID.Length; i++)
         {
             if (harvestToolItemID[i] == toolID) return requireActionCount[i];
         }

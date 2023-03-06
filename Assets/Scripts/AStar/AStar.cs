@@ -39,7 +39,7 @@ namespace Y.AStar
         /// 构建网格节点信息，初始化两个列表
         private bool GenerateGridNodes(string sceneName, Vector2Int startPos, Vector2Int endPos)
         {
-            if (GridMapManager.Instance.GetGridDimensions(sceneName, out var gridDimensions, out var gridOrigin))
+            if (GridMapManager.Instance.GetGridDimensions(sceneName, out Vector2Int gridDimensions, out Vector2Int gridOrigin))
             {
                 // 根据瓦片地图范围构建网络移动节点范维数组
                 gridNodes = new GridNodes(gridDimensions.x, gridDimensions.y);
@@ -59,18 +59,18 @@ namespace Y.AStar
             targetNode = gridNodes.GetGridNode(endPos.x - originX, endPos.y - originY);
 
 
-            for (var x = 0; x < gridWidth; x++)
+            for (int x = 0; x < gridWidth; x++)
             {
-                for (var y = 0; y < gridHeight; y++)
+                for (int y = 0; y < gridHeight; y++)
                 {
-                    var tilePos = new Vector3Int(x + originX, y + originY, 0);
-                    var key = tilePos.x + "x" + tilePos.y + "y" + sceneName;
+                    Vector3Int tilePos = new Vector3Int(x + originX, y + originY, 0);
+                    string key = tilePos.x + "x" + tilePos.y + "y" + sceneName;
 
-                    var tile = GridMapManager.Instance.GetTileDetails(key);
+                    TileDetails tile = GridMapManager.Instance.GetTileDetails(key);
 
                     if (tile != null)
                     {
-                        var node = gridNodes.GetGridNode(x, y);
+                        Node node = gridNodes.GetGridNode(x, y);
                         if (tile.isNpcObstacle)
                             node.isObstacle = true;
                     }
@@ -93,7 +93,7 @@ namespace Y.AStar
                 openNodeList.Sort();
 
                 // 找到第一项（最近的）
-                var closeNode = openNodeList[0];
+                Node closeNode = openNodeList[0];
 
                 // 从这一轮周围 8个点中移除此点，并将这个点添加至所有被选中的点的集合
                 openNodeList.RemoveAt(0);
@@ -117,13 +117,13 @@ namespace Y.AStar
         /// currentNode：每当选择一个新的点时，去比较以他为中心的上下左右 8个点
         private void EvaluateNeighbourNodes(Node currentNode)
         {
-            var currentNodePos = currentNode.gridPosition;
+            Vector2Int currentNodePos = currentNode.gridPosition;
             Node validNeighbourNode;
 
             // 从 -1到 1是因为周围 8个点可以通过当前坐标相邻的特性去遍历
-            for (var x = -1; x <= 1; x++)
+            for (int x = -1; x <= 1; x++)
             {
-                for (var y = -1; y <= 1; y++)
+                for (int y = -1; y <= 1; y++)
                 {
                     // 都等于 0则为原点本身，不做考虑
                     if (x == 0 && y == 0)
@@ -155,7 +155,7 @@ namespace Y.AStar
             // 出界的话，认为无效点
             if (x >= gridWidth || y >= gridHeight || x < 0 || y < 0) return null;
 
-            var neighbourNode = gridNodes.GetGridNode(x, y);
+            Node neighbourNode = gridNodes.GetGridNode(x, y);
 
             // 不为障碍，且不为此点的父节点（已被添加至选中的点的集合中，通俗点说就是来自这个点）
             if (neighbourNode.isObstacle || closeNodeList.Contains(neighbourNode))
@@ -167,8 +167,8 @@ namespace Y.AStar
         /// 返回两点距离值（14的倍数 + 10的倍数）
         private int GetDistance(Node nodeA, Node nodeB)
         {
-            var xDistance = Mathf.Abs(nodeA.gridPosition.x - nodeB.gridPosition.x);
-            var yDistance = Mathf.Abs(nodeA.gridPosition.y - nodeB.gridPosition.y);
+            int xDistance = Mathf.Abs(nodeA.gridPosition.x - nodeB.gridPosition.x);
+            int yDistance = Mathf.Abs(nodeA.gridPosition.y - nodeB.gridPosition.y);
 
             if (xDistance > yDistance)
             {
@@ -182,11 +182,11 @@ namespace Y.AStar
         /// 更新路径每一步的坐标和场景名字 
         private void UpdatePathOnMovementStepStack(string sceneName, Stack<MovementStep> npcMovementStep)
         {
-            var nextNode = targetNode;
+            Node nextNode = targetNode;
 
             while (nextNode != null)
             {
-                var newStep = new MovementStep
+                MovementStep newStep = new MovementStep
                 {
                     sceneName = sceneName,
                     gridCoordinate = new Vector2Int(nextNode.gridPosition.x + originX, nextNode.gridPosition.y + originY)

@@ -18,7 +18,7 @@ public class TimeUI : MonoBehaviour
 
     private void Awake()
     {
-        for (var i = 0; i < clockParent.childCount; i++)
+        for (int i = 0; i < clockParent.childCount; i++)
         {
             clockBlocks.Add(clockParent.GetChild(i).gameObject);
             clockParent.GetChild(i).gameObject.SetActive(false);
@@ -54,9 +54,9 @@ public class TimeUI : MonoBehaviour
     // 根据小时切换时间块
     private void SwitchHourImage(int hour)
     {
-        var index = hour / 4;
+        int index = hour / 4;
 
-        for (var i = 0; i < clockBlocks.Count; i++)
+        for (int i = 0; i < clockBlocks.Count; i++)
         {
             clockBlocks[i].SetActive(i < index + 1);
         }
@@ -64,7 +64,7 @@ public class TimeUI : MonoBehaviour
 
     private void DayNightImageRotate(int hour)
     {
-        var target = new Vector3(0, 0, hour * (360f / 24) - 90);
+        Vector3 target = new Vector3(0, 0, hour * (360f / 24) - 90);
         dayNightImage.DORotate(target, 1);
     }
 }

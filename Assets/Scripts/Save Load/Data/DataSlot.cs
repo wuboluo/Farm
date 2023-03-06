@@ -19,11 +19,11 @@ namespace Y.Save
         {
             get
             {
-                var key = TimeManager.Instance.GUID;
+                string key = TimeManager.Instance.GUID;
 
                 if (dataDict.ContainsKey(key))
                 {
-                    var timeData = dataDict[key];
+                    GameSaveData timeData = dataDict[key];
                     return timeData.timeDict["gameYear"] + "年/" +
                            (Season) timeData.timeDict["gameSeason"] + "/" +
                            timeData.timeDict["gameMonth"] + "月/" +
@@ -38,11 +38,11 @@ namespace Y.Save
         {
             get
             {
-                var key = TransitionManager.Instance.GUID;
+                string key = TransitionManager.Instance.GUID;
                 
                 if (dataDict.ContainsKey(key))
                 {
-                    var transitionData = dataDict[key];
+                    GameSaveData transitionData = dataDict[key];
                     return transitionData.dataSceneName switch
                     {
                         "00.Start" => "海边",

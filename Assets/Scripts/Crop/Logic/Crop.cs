@@ -22,7 +22,7 @@ public class Crop : MonoBehaviour
         tileDetails = tile;
 
         // 工具使用次数
-        var requireActionCount = cropDetails.GetTotalRequireCount(tool.itemID);
+        int requireActionCount = cropDetails.GetTotalRequireCount(tool.itemID);
         if (requireActionCount == -1) return;
 
         anim = GetComponentInChildren<Animator>();
@@ -93,7 +93,7 @@ public class Crop : MonoBehaviour
     /// 生成果实
     private void SpawnHarvestItems()
     {
-        for (var i = 0; i < cropDetails.producedItemID.Length; i++)
+        for (int i = 0; i < cropDetails.producedItemID.Length; i++)
         {
             int amountToProduce;
 
@@ -105,7 +105,7 @@ public class Crop : MonoBehaviour
                 amountToProduce = Random.Range(cropDetails.producedMinAmount[i], cropDetails.producedMaxAmount[i] + 1);
 
             // 执行生成指定数量的物品
-            for (var j = 0; j < amountToProduce; j++)
+            for (int j = 0; j < amountToProduce; j++)
             {
                 // 在人物头上生成
                 if (cropDetails.generateAtPlayerPosition)
@@ -116,10 +116,10 @@ public class Crop : MonoBehaviour
                 else
                 {
                     // 判断应该生成的物品方向
-                    var dirX = transform.position.x > PlayerTransform.position.x ? 1 : -1;
+                    int dirX = transform.position.x > PlayerTransform.position.x ? 1 : -1;
 
                     // 一定范围内的随机
-                    var spawnPos = new Vector3(transform.position.x + Random.Range(dirX, cropDetails.spawnRadius.x * dirX),
+                    Vector3 spawnPos = new Vector3(transform.position.x + Random.Range(dirX, cropDetails.spawnRadius.x * dirX),
                         transform.position.y + Random.Range(cropDetails.spawnRadius.y, -cropDetails.spawnRadius.y), 0);
 
                     EventHandler.CallInstantiateItemInScene(cropDetails.producedItemID[i], spawnPos);

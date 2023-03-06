@@ -23,11 +23,11 @@ public class CropGenerator : MonoBehaviour
 
     private void GenerateCrop()
     {
-        var cropGridPos = currentGrid.WorldToCell(transform.position);
+        Vector3Int cropGridPos = currentGrid.WorldToCell(transform.position);
 
         if (seedItemID != 0)
         {
-            var tile = GridMapManager.Instance.GetTileDetailsOnMousePosition(cropGridPos) ?? new TileDetails
+            TileDetails tile = GridMapManager.Instance.GetTileDetailsOnMousePosition(cropGridPos) ?? new TileDetails
             {
                 gridX = cropGridPos.x,
                 gridY = cropGridPos.y

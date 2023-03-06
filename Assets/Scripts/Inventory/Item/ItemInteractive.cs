@@ -31,13 +31,13 @@ public class ItemInteractive : MonoBehaviour
     {
         isAnimating = true;
 
-        for (var i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++)
         {
             transform.GetChild(0).Rotate(0, 0, turnToLeft ? 2 : -2);
             yield return pause;
         }
 
-        for (var i = 0; i < 5; i++)
+        for (int i = 0; i < 5; i++)
         {
             transform.GetChild(0).Rotate(0, 0, turnToLeft ? -2 : 2);
             yield return pause;

@@ -26,7 +26,7 @@ public class ItemTooltip : MonoBehaviour
         {
             bottomPart.SetActive(true);
 
-            var price = details.itemPrice;
+            int price = details.itemPrice;
             if (slotType == SlotType.Bag)
             {
                 price = (int) (price * details.sellPercentage);
@@ -62,13 +62,13 @@ public class ItemTooltip : MonoBehaviour
 
     public void SetupResourcePanel(int id)
     {
-        var bluePrintDetails = InventoryManager.Instance.bluePrintData.GetBluePrintDetails(id);
+        BluePrintDetails bluePrintDetails = InventoryManager.Instance.bluePrintData.GetBluePrintDetails(id);
 
-        for (var i = 0; i < resourceItems.Length; i++)
+        for (int i = 0; i < resourceItems.Length; i++)
         {
             if (i < bluePrintDetails.resourceItem.Length)
             {
-                var item = bluePrintDetails.resourceItem[i];
+                InventoryItem item = bluePrintDetails.resourceItem[i];
 
                 resourceItems[i].gameObject.SetActive(true);
                 resourceItems[i].sprite = InventoryManager.Instance.GetItemDetails(item.itemID).itemIcon;

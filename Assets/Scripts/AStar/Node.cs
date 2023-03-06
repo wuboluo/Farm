@@ -31,7 +31,7 @@ namespace Y.AStar
         public int CompareTo(Node other)
         {
             // 比较选出最低的 F值，返回 -1 0 1
-            var result = FCost.CompareTo(other.FCost);
+            int result = FCost.CompareTo(other.FCost);
 
             if (result == 0)
             {

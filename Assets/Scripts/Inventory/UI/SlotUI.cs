@@ -75,8 +75,8 @@ namespace Y.Inventory
                 if (eventData.pointerCurrentRaycast.gameObject.GetComponent<SlotUI>() == null)
                     return;
 
-                var targetSlot = eventData.pointerCurrentRaycast.gameObject.GetComponent<SlotUI>();
-                var targetIndex = targetSlot.slotIndex;
+                SlotUI targetSlot = eventData.pointerCurrentRaycast.gameObject.GetComponent<SlotUI>();
+                int targetIndex = targetSlot.slotIndex;
 
                 //在Player自身背包范围内交换
                 if (slotType == SlotType.Bag && targetSlot.slotType == SlotType.Bag)

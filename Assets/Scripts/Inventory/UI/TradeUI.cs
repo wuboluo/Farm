@@ -49,7 +49,7 @@ public class TradeUI : MonoBehaviour
 
     private void TradeItem()
     {
-        var amount = Convert.ToInt32(tradeAmount.text);
+        int amount = Convert.ToInt32(tradeAmount.text);
         InventoryManager.Instance.TradeItem(itemDetails, amount, isSellTrade);
 
         // 关闭窗口

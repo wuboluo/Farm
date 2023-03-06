@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 using Y.Save;
 
-public class GridMapManager : Singleton<GridMapManager>, ISaveable
+public class GridMapManager : Singleton<GridMapManager>, ISavable
 {
     [Header("种地瓦片切换信息")] public RuleTile digTile;
     public RuleTile waterTile;
@@ -29,10 +29,10 @@ public class GridMapManager : Singleton<GridMapManager>, ISaveable
 
     private void Start()
     {
-        ISaveable saveable = this;
-        saveable.RegisterSaveable();
+        ISavable savable = this;
+        savable.RegisterSavable();
         
-        foreach (var mapData in mapDataList)
+        foreach (MapDataSO mapData in mapDataList)
         {
             firstLoadDict.Add(mapData.sceneName, true);
 
@@ -83,7 +83,7 @@ public class GridMapManager : Singleton<GridMapManager>, ISaveable
         currentSeason = season;
 
         // 每过一天
-        foreach (var tile in tileDetailsDict)
+        foreach (KeyValuePair<string, TileDetails> tile in tileDetailsDict)
         {
             // 需要重新浇水
             if (tile.Value.daysSinceWatered > -1) tile.Value.daysSinceWatered = -1;
@@ -113,12 +113,12 @@ public class GridMapManager : Singleton<GridMapManager>, ISaveable
     /// 执行实际工具或物品功能，无需再判断格子是否允许等条件
     private void OnExecuteActionAfterAnimation(Vector3 mouseWorldPos, ItemDetails itemDetails)
     {
-        var mouseGridPos = currentGrid.WorldToCell(mouseWorldPos);
-        var currentTile = GetTileDetailsOnMousePosition(mouseGridPos);
+        Vector3Int mouseGridPos = currentGrid.WorldToCell(mouseWorldPos);
+        TileDetails currentTile = GetTileDetailsOnMousePosition(mouseGridPos);
 
         if (currentTile != null)
         {
-            var crop = GetCropObject(mouseWorldPos);
+            Crop crop = GetCropObject(mouseWorldPos);
 
             switch (itemDetails.itemType)
             {
@@ -157,8 +157,8 @@ public class GridMapManager : Singleton<GridMapManager>, ISaveable
                     break;
 
                 case ItemType.ReapTool:
-                    var reapCount = 0;
-                    foreach (var t in reapItemsInRadius)
+                    int reapCount = 0;
+                    foreach (ReapItem t in reapItemsInRadius)
                     {
                         EventHandler.CallParticleEffectEvent(ParticleEffectType.ReapableScenery, t.transform.position + Vector3.up);
                         t.SpawnHarvestItems();
@@ -190,10 +190,10 @@ public class GridMapManager : Singleton<GridMapManager>, ISaveable
     /// 通过物理方法判断鼠标点击位置的农作物
     public Crop GetCropObject(Vector3 mouseWorldPos)
     {
-        var colliders = Physics2D.OverlapPointAll(mouseWorldPos);
+        Collider2D[] colliders = Physics2D.OverlapPointAll(mouseWorldPos);
         Crop currentCrop = null;
 
-        foreach (var t in colliders)
+        foreach (Collider2D t in colliders)
         {
             if (t.GetComponent<Crop>()) currentCrop = t.GetComponent<Crop>();
         }
@@ -206,16 +206,16 @@ public class GridMapManager : Singleton<GridMapManager>, ISaveable
     {
         reapItemsInRadius = new List<ReapItem>();
 
-        var colliders = new Collider2D[20];
+        Collider2D[] colliders = new Collider2D[20];
         Physics2D.OverlapCircleNonAlloc(mouseWorldPos, tool.itemUseRadius, colliders);
 
         if (colliders.Length > 0)
         {
-            for (var i = 0; i < colliders.Length; i++)
+            for (int i = 0; i < colliders.Length; i++)
             {
                 if (colliders[i] != null && colliders[i].GetComponent<ReapItem>())
                 {
-                    var item = colliders[i].GetComponent<ReapItem>();
+                    ReapItem item = colliders[i].GetComponent<ReapItem>();
                     reapItemsInRadius.Add(item);
                 }
             }
@@ -227,18 +227,18 @@ public class GridMapManager : Singleton<GridMapManager>, ISaveable
     private void InitTileDetailDict(MapDataSO mapData)
     {
         // 遍历 mapDataSO 中记录的瓦片信息
-        foreach (var tileProperty in mapData.tileProperties)
+        foreach (TileProperty tileProperty in mapData.tileProperties)
         {
             // 声明一个临时变量，记录每一个瓦片信息
             // 记录 坐标
-            var tileDetails = new TileDetails
+            TileDetails tileDetails = new TileDetails
             {
                 gridX = tileProperty.tileCoordinate.x,
                 gridY = tileProperty.tileCoordinate.y
             };
 
             // 设置惟一的 key，由 x+y+场景名称组成
-            var key = tileDetails.gridX + "x" + tileDetails.gridY + "y" + mapData.sceneName;
+            string key = tileDetails.gridX + "x" + tileDetails.gridY + "y" + mapData.sceneName;
 
             // 如果字典中已存在此 key对应的瓦片属性，赋值给刚声明的临时变量
             if (GetTileDetails(key) != null) tileDetails = GetTileDetails(key);
@@ -278,14 +278,14 @@ public class GridMapManager : Singleton<GridMapManager>, ISaveable
     /// 根据鼠标网格返回瓦片信息
     public TileDetails GetTileDetailsOnMousePosition(Vector3Int mouseGridPos)
     {
-        var key = mouseGridPos.x + "x" + mouseGridPos.y + "y" + SceneManager.GetActiveScene().name;
+        string key = mouseGridPos.x + "x" + mouseGridPos.y + "y" + SceneManager.GetActiveScene().name;
         return GetTileDetails(key);
     }
 
     /// 显示挖坑瓦片
     private void SetDigGround(TileDetails tile)
     {
-        var pos = new Vector3Int(tile.gridX, tile.gridY, 0);
+        Vector3Int pos = new Vector3Int(tile.gridX, tile.gridY, 0);
         if (digTilemap != null)
         {
             digTilemap.SetTile(pos, digTile);
@@ -295,7 +295,7 @@ public class GridMapManager : Singleton<GridMapManager>, ISaveable
     /// 显示浇水瓦片
     private void SetWaterGround(TileDetails tile)
     {
-        var pos = new Vector3Int(tile.gridX, tile.gridY, 0);
+        Vector3Int pos = new Vector3Int(tile.gridX, tile.gridY, 0);
         if (waterTilemap != null)
         {
             waterTilemap.SetTile(pos, waterTile);
@@ -305,7 +305,7 @@ public class GridMapManager : Singleton<GridMapManager>, ISaveable
     /// 更新瓦片信息
     public void UpdateTileDetails(TileDetails tileDetails)
     {
-        var key = tileDetails.gridX + "x" + tileDetails.gridY + "y" + SceneManager.GetActiveScene().name;
+        string key = tileDetails.gridX + "x" + tileDetails.gridY + "y" + SceneManager.GetActiveScene().name;
 
         if (tileDetailsDict.ContainsKey(key))
         {
@@ -324,7 +324,7 @@ public class GridMapManager : Singleton<GridMapManager>, ISaveable
         if (digTilemap != null) digTilemap.ClearAllTiles();
         if (waterTilemap != null) waterTilemap.ClearAllTiles();
 
-        foreach (var crop in FindObjectsOfType<Crop>())
+        foreach (Crop crop in FindObjectsOfType<Crop>())
         {
             Destroy(crop.gameObject);
         }
@@ -336,10 +336,10 @@ public class GridMapManager : Singleton<GridMapManager>, ISaveable
     private void DisplayMap(string sceneName)
     {
         // 遍历已保存的地图信息
-        foreach (var tile in tileDetailsDict)
+        foreach (KeyValuePair<string, TileDetails> tile in tileDetailsDict)
         {
-            var key = tile.Key;
-            var tileDetails = tile.Value;
+            string key = tile.Key;
+            TileDetails tileDetails = tile.Value;
 
             // 如果其中有包含所要查询的场景名称的 key，那么把这个场景中的所有瓦片都查询一遍（因为 key包含 xy坐标，每个记录的瓦片遍历一次）
             if (key.Contains(sceneName))
@@ -365,7 +365,7 @@ public class GridMapManager : Singleton<GridMapManager>, ISaveable
         gridDimensions = Vector2Int.zero;
         gridOrigin = Vector2Int.zero;
 
-        foreach (var mapData in mapDataList)
+        foreach (MapDataSO mapData in mapDataList)
         {
             if (mapData.sceneName == sceneName)
             {
@@ -386,7 +386,7 @@ public class GridMapManager : Singleton<GridMapManager>, ISaveable
 
     public GameSaveData GenerateSaveData()
     {
-        var saveData = new GameSaveData();
+        GameSaveData saveData = new GameSaveData();
         saveData.tileDetailsDict = tileDetailsDict;
         saveData.firstLoadDict = firstLoadDict;
         return saveData;

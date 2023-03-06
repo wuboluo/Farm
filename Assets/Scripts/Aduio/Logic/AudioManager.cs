@@ -48,13 +48,13 @@ public class AudioManager : Singleton<AudioManager>
 
     private void OnAfterSceneLoadedEvent()
     {
-        var currentScene = SceneManager.GetActiveScene().name;
-        var sceneSound = sceneSoundData.GetSceneSoundItem(currentScene);
+        string currentScene = SceneManager.GetActiveScene().name;
+        SceneSoundItem sceneSound = sceneSoundData.GetSceneSoundItem(currentScene);
 
         if (sceneSound == null) return;
 
-        var ambient = soundDetailsData.GetSoundDetails(sceneSound.ambient);
-        var music = soundDetailsData.GetSoundDetails(sceneSound.music);
+        SoundDetails ambient = soundDetailsData.GetSoundDetails(sceneSound.ambient);
+        SoundDetails music = soundDetailsData.GetSoundDetails(sceneSound.music);
 
         if (soundRoutine != null) StopCoroutine(soundRoutine);
         soundRoutine = StartCoroutine(PlaySoundRoutine(music, ambient));
@@ -62,7 +62,7 @@ public class AudioManager : Singleton<AudioManager>
 
     private void OnPlaySoundEvent(SoundName soundName)
     {
-        var soundDetails = soundDetailsData.GetSoundDetails(soundName);
+        SoundDetails soundDetails = soundDetailsData.GetSoundDetails(soundName);
 
         if (soundDetails != null)
             EventHandler.CallInitSoundEffectEvent(soundDetails);

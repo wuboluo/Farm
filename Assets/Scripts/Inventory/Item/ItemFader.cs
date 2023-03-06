@@ -14,14 +14,14 @@ public class ItemFader : MonoBehaviour
     // 逐渐恢复颜色
     public void FadeIn()
     {
-        var targetColor = new Color(1, 1, 1, 1);
+        Color targetColor = new Color(1, 1, 1, 1);
         _spriteRenderer.DOColor(targetColor, Settings.itemFadeDuration);
     }
 
     // 逐渐半透明
     public void FadeOut()
     {
-        var targetColor = new Color(1, 1, 1, Settings.targetAlpha);
+        Color targetColor = new Color(1, 1, 1, Settings.targetAlpha);
         _spriteRenderer.DOColor(targetColor, Settings.itemFadeDuration);
     }
 }

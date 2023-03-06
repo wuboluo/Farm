@@ -8,7 +8,7 @@ public class MenuUI : MonoBehaviour
 
    public void SwitchPanel(int index)
    {
-      for (var i = 0; i < panels.Length; i++)
+      for (int i = 0; i < panels.Length; i++)
       {
          if (i == index)
          {

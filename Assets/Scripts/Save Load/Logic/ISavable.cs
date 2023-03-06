@@ -1,13 +1,13 @@
 namespace Y.Save
 {
-    public interface ISaveable
+    public interface ISavable
     {
         string GUID { get; }
 
         // C#8.0之后，接口中的函数可以写内容
-        void RegisterSaveable()
+        void RegisterSavable()
         {
-            SaveLoadManager.Instance.RegisterSaveable(this);
+            SaveLoadManager.Instance.RegisterSavable(this);
         }
 
         /// 存储数据

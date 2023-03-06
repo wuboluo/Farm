@@ -27,7 +27,7 @@ public class NpcManager : Singleton<NpcManager>
 
     private void OnStartNewGameEvent(int index)
     {
-        foreach (var character in npcPositionList)
+        foreach (NpcPosition character in npcPositionList)
         {
             character.npc.position = character.position;
             character.npc.GetComponent<NpcMovement>().StartScene = character.startScene;
@@ -39,9 +39,9 @@ public class NpcManager : Singleton<NpcManager>
     {
         if (sceneRouteData.sceneRoutesList.Count > 0)
         {
-            foreach (var route in sceneRouteData.sceneRoutesList)
+            foreach (SceneRoute route in sceneRouteData.sceneRoutesList)
             {
-                var key = route.fromSceneName + route.gotoSceneName;
+                string key = route.fromSceneName + route.gotoSceneName;
 
                 if (sceneRouteDict.ContainsKey(key)) continue;
                 sceneRouteDict.Add(key, route);

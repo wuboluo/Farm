@@ -20,7 +20,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 0}
     itemDescription: "\u780D\u6811"
     itemUseRadius: 1
-    canPickedup: 1
+    canPickedUp: 1
     canDropped: 0
     canCarried: 0
     itemPrice: 10
@@ -32,7 +32,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 0}
     itemDescription: "\u9504\u5730"
     itemUseRadius: 1
-    canPickedup: 1
+    canPickedUp: 1
     canDropped: 0
     canCarried: 0
     itemPrice: 0
@@ -44,7 +44,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 0}
     itemDescription: "\u5272\u8349"
     itemUseRadius: 1
-    canPickedup: 1
+    canPickedUp: 1
     canDropped: 0
     canCarried: 0
     itemPrice: 0
@@ -56,7 +56,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 0}
     itemDescription: "\u6316\u77F3\u5934"
     itemUseRadius: 1
-    canPickedup: 1
+    canPickedUp: 1
     canDropped: 0
     canCarried: 0
     itemPrice: 0
@@ -68,7 +68,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 0}
     itemDescription: "\u6D47\u6C34"
     itemUseRadius: 1
-    canPickedup: 1
+    canPickedUp: 1
     canDropped: 0
     canCarried: 0
     itemPrice: 0
@@ -80,7 +80,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 0}
     itemDescription: "\u6536\u5272\u5E84\u7A3C"
     itemUseRadius: 1
-    canPickedup: 1
+    canPickedUp: 1
     canDropped: 0
     canCarried: 0
     itemPrice: 0
@@ -92,7 +92,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 21300000, guid: 712efb3c5425e4d62aa03accb5b7a498, type: 3}
     itemDescription: "\u4E00\u9897\u571F\u8C46\u79CD\u5B50"
     itemUseRadius: 1
-    canPickedup: 1
+    canPickedUp: 1
     canDropped: 0
     canCarried: 1
     itemPrice: 5
@@ -104,7 +104,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 21300000, guid: 58c6799e544ae49a48186335b7f16ba0, type: 3}
     itemDescription: "\u4E00\u9897\u767D\u841D\u535C\u79CD\u5B50"
     itemUseRadius: 1
-    canPickedup: 1
+    canPickedUp: 1
     canDropped: 0
     canCarried: 1
     itemPrice: 0
@@ -116,7 +116,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 21300000, guid: 0f5a527a6777043739c58b084887ec12, type: 3}
     itemDescription: "\u4E00\u9897\u7D2B\u841D\u535C\u79CD\u5B50"
     itemUseRadius: 1
-    canPickedup: 1
+    canPickedUp: 1
     canDropped: 0
     canCarried: 1
     itemPrice: 10
@@ -128,7 +128,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 21300000, guid: eff80b331cf5c4ca49471d8604c3b52e, type: 3}
     itemDescription: "\u4E00\u9897\u8461\u8404\u79CD\u5B50"
     itemUseRadius: 1
-    canPickedup: 1
+    canPickedUp: 1
     canDropped: 0
     canCarried: 1
     itemPrice: 15
@@ -140,7 +140,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 21300000, guid: a190370c9a26a43aa9c3e596f8976fc4, type: 3}
     itemDescription: 
     itemUseRadius: 1
-    canPickedup: 1
+    canPickedUp: 1
     canDropped: 0
     canCarried: 1
     itemPrice: 0
@@ -152,7 +152,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 21300000, guid: 7fa27847daa7848cd8221a18379f7a21, type: 3}
     itemDescription: 
     itemUseRadius: 1
-    canPickedup: 1
+    canPickedUp: 1
     canDropped: 0
     canCarried: 1
     itemPrice: 8
@@ -164,7 +164,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 21300000, guid: 738078985c017481f8d443cf821e26b5, type: 3}
     itemDescription: 
     itemUseRadius: 1
-    canPickedup: 1
+    canPickedUp: 1
     canDropped: 0
     canCarried: 1
     itemPrice: 0
@@ -176,7 +176,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 21300000, guid: 38565caefc0504f3f9cb90ce3c5d3c3c, type: 3}
     itemDescription: 
     itemUseRadius: 1
-    canPickedup: 1
+    canPickedUp: 1
     canDropped: 0
     canCarried: 1
     itemPrice: 0
@@ -188,7 +188,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 0}
     itemDescription: 
     itemUseRadius: 1
-    canPickedup: 1
+    canPickedUp: 1
     canDropped: 0
     canCarried: 1
     itemPrice: 0
@@ -200,7 +200,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 21300000, guid: e4373ab1bca4244e89aa5c948b14f09f, type: 3}
     itemDescription: 
     itemUseRadius: 1
-    canPickedup: 1
+    canPickedUp: 1
     canDropped: 0
     canCarried: 1
     itemPrice: 0
@@ -212,7 +212,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 21300000, guid: 3979be82862ab4b42be8e0b3222694bc, type: 3}
     itemDescription: 
     itemUseRadius: 1
-    canPickedup: 1
+    canPickedUp: 1
     canDropped: 0
     canCarried: 1
     itemPrice: 1
@@ -224,7 +224,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 21300000, guid: 83539708444bc497b8d9f5bba223cc6f, type: 3}
     itemDescription: 
     itemUseRadius: 1
-    canPickedup: 1
+    canPickedUp: 1
     canDropped: 0
     canCarried: 1
     itemPrice: 1
@@ -236,7 +236,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: -302366086, guid: bd1655396b777431e85369611fc36aed, type: 3}
     itemDescription: 
     itemUseRadius: 0
-    canPickedup: 0
+    canPickedUp: 1
     canDropped: 0
     canCarried: 0
     itemPrice: 0
@@ -248,7 +248,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: -2109362084, guid: 87430ba1a26c4408191e4027950e7133, type: 3}
     itemDescription: 
     itemUseRadius: 0
-    canPickedup: 0
+    canPickedUp: 1
     canDropped: 0
     canCarried: 0
     itemPrice: 0
@@ -260,7 +260,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 504974383, guid: ba8cb7102384d418883ef909ed3befd5, type: 3}
     itemDescription: 
     itemUseRadius: 0
-    canPickedup: 0
+    canPickedUp: 1
     canDropped: 0
     canCarried: 0
     itemPrice: 0
@@ -272,7 +272,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: -1889884627, guid: 24e3edf5cfa4d468fbdeed1f09a965a8, type: 3}
     itemDescription: 
     itemUseRadius: 0
-    canPickedup: 0
+    canPickedUp: 1
     canDropped: 0
     canCarried: 0
     itemPrice: 0
@@ -284,7 +284,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: -173135368, guid: 95e7e06c6bf4644f3a4bc7b164e261bf, type: 3}
     itemDescription: 
     itemUseRadius: 0
-    canPickedup: 0
+    canPickedUp: 1
     canDropped: 0
     canCarried: 0
     itemPrice: 0
@@ -294,9 +294,9 @@ MonoBehaviour:
     itemType: 1
     itemIcon: {fileID: 21300000, guid: 18dd810d9429d489cae29f0f11a4d177, type: 3}
     ItemOnWorldSprite: {fileID: 869094605, guid: 2367379c11bac476d8ae816305d1bf35, type: 3}
-    itemDescription: 
+    itemDescription: "\u9762\u5178\uFF1F\u4E0D\u5B58\u5728\u7684"
     itemUseRadius: 0
-    canPickedup: 0
+    canPickedUp: 1
     canDropped: 0
     canCarried: 0
     itemPrice: 0
@@ -308,7 +308,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 1454489578, guid: 0f8fa26bd67a74039b2bfcc93554e8a2, type: 3}
     itemDescription: 
     itemUseRadius: 0
-    canPickedup: 0
+    canPickedUp: 1
     canDropped: 0
     canCarried: 0
     itemPrice: 0
@@ -320,7 +320,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: -1700157861, guid: d51ba492cc4d84616b8153b632a0f330, type: 3}
     itemDescription: 
     itemUseRadius: 0
-    canPickedup: 0
+    canPickedUp: 1
     canDropped: 0
     canCarried: 0
     itemPrice: 0
@@ -332,7 +332,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 675625077, guid: cfbc4902a2e4349e2986894ea4d8330b, type: 3}
     itemDescription: 
     itemUseRadius: 0
-    canPickedup: 0
+    canPickedUp: 1
     canDropped: 0
     canCarried: 0
     itemPrice: 0
@@ -344,7 +344,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 2095958316, guid: 8f2e8097fb3aa4be68e23bead3addf6e, type: 3}
     itemDescription: 
     itemUseRadius: 0
-    canPickedup: 0
+    canPickedUp: 1
     canDropped: 0
     canCarried: 0
     itemPrice: 0
@@ -356,7 +356,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 21300000, guid: 0d5f887d0ba144b7180f3e33336beac5, type: 3}
     itemDescription: 
     itemUseRadius: 2
-    canPickedup: 1
+    canPickedUp: 1
     canDropped: 1
     canCarried: 1
     itemPrice: 15
@@ -368,7 +368,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 21300000, guid: 018bd79f696fb400584536e445976758, type: 3}
     itemDescription: 
     itemUseRadius: 2
-    canPickedup: 1
+    canPickedUp: 1
     canDropped: 1
     canCarried: 1
     itemPrice: 15
@@ -380,7 +380,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 21300000, guid: f92caccf9fb8e45bcb3b3b1116dcbf48, type: 3}
     itemDescription: 
     itemUseRadius: 0
-    canPickedup: 0
+    canPickedUp: 0
     canDropped: 0
     canCarried: 0
     itemPrice: 0
@@ -392,7 +392,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 21300000, guid: 774ad8d2636c5457e81a95a3e1f2352d, type: 3}
     itemDescription: 
     itemUseRadius: 0
-    canPickedup: 0
+    canPickedUp: 0
     canDropped: 0
     canCarried: 0
     itemPrice: 0
@@ -404,7 +404,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 21300000, guid: b40fde803efab463bbc950e4d29ee5ce, type: 3}
     itemDescription: 
     itemUseRadius: 0
-    canPickedup: 0
+    canPickedUp: 0
     canDropped: 0
     canCarried: 0
     itemPrice: 0
@@ -416,7 +416,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 21300000, guid: 51532cbb9bf104839b6330f0a739b933, type: 3}
     itemDescription: 
     itemUseRadius: 0
-    canPickedup: 0
+    canPickedUp: 0
     canDropped: 0
     canCarried: 0
     itemPrice: 0
@@ -428,7 +428,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 21300000, guid: 45a3ea64377134f4299e757a1becb6df, type: 3}
     itemDescription: 
     itemUseRadius: 2
-    canPickedup: 1
+    canPickedUp: 0
     canDropped: 1
     canCarried: 1
     itemPrice: 2
@@ -440,7 +440,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 0}
     itemDescription: 
     itemUseRadius: 0
-    canPickedup: 0
+    canPickedUp: 0
     canDropped: 0
     canCarried: 0
     itemPrice: 0
@@ -452,7 +452,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 0}
     itemDescription: 
     itemUseRadius: 0
-    canPickedup: 0
+    canPickedUp: 0
     canDropped: 0
     canCarried: 0
     itemPrice: 0
@@ -464,7 +464,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 0}
     itemDescription: 
     itemUseRadius: 0
-    canPickedup: 0
+    canPickedUp: 0
     canDropped: 0
     canCarried: 0
     itemPrice: 0
@@ -476,7 +476,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 21300000, guid: e8ebe711ec1de4697a10d8c2f3f39f20, type: 3}
     itemDescription: 
     itemUseRadius: 2
-    canPickedup: 1
+    canPickedUp: 1
     canDropped: 1
     canCarried: 1
     itemPrice: 3
@@ -488,7 +488,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 697528162, guid: d67f8bdea7b454ba08443e00d51268b8, type: 3}
     itemDescription: "\u9700\u898120\u4E2A\u9614\u53F6\u6811\u6728\u5934\u624D\u80FD\u5EFA\u9020"
     itemUseRadius: 4
-    canPickedup: 0
+    canPickedUp: 0
     canDropped: 1
     canCarried: 1
     itemPrice: 90
@@ -500,7 +500,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 21300000, guid: 3775f8176edd949449f110983092e864, type: 3}
     itemDescription: "\u5EFA\u9020\u4E00\u4E2A\u53EF\u4EE5\u7528\u6765\u50A8\u5B58\u7269\u54C1\u7684\u7BB1\u5B50\uFF0C\u6700\u5927\u5B58\u653E\u6570\u91CF\u4E3A8\u4E2A"
     itemUseRadius: 4
-    canPickedup: 0
+    canPickedUp: 0
     canDropped: 1
     canCarried: 1
     itemPrice: 300

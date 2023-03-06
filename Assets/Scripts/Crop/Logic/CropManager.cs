@@ -25,7 +25,7 @@ public class CropManager : Singleton<CropManager>
 
     private void OnPlantSeed(int id, TileDetails tileDetails)
     {
-        var currentCrop = GetCropDetails(id);
+        CropDetails currentCrop = GetCropDetails(id);
 
         // 种子不为空 并且 当前季节可以播种 并且 该瓦片内没有被播种
         // 用于第一次播种
@@ -75,12 +75,12 @@ public class CropManager : Singleton<CropManager>
     private void DisplayCropPlant(TileDetails tileDetails, CropDetails cropDetails)
     {
         // 成长阶段
-        var growthStages = cropDetails.growthDays.Length;
-        var currentStage = 0;
-        var dayCounter = cropDetails.TotalGrowthDays;
+        int growthStages = cropDetails.growthDays.Length;
+        int currentStage = 0;
+        int dayCounter = cropDetails.TotalGrowthDays;
 
         // 倒序计算当前的成长阶段
-        for (var i = growthStages - 1; i >= 0; i--)
+        for (int i = growthStages - 1; i >= 0; i--)
         {
             if (tileDetails.growthDays >= dayCounter)
             {
@@ -91,12 +91,12 @@ public class CropManager : Singleton<CropManager>
         }
 
         // 获取当前阶段的 Prefab
-        var cropPrefab = cropDetails.growthPrefabs[currentStage];
-        var cropSprite = cropDetails.growthSprites[currentStage];
+        GameObject cropPrefab = cropDetails.growthPrefabs[currentStage];
+        Sprite cropSprite = cropDetails.growthSprites[currentStage];
 
-        var pos = new Vector3(tileDetails.gridX + 0.5f, tileDetails.gridY + 0.5f, 0);
+        Vector3 pos = new Vector3(tileDetails.gridX + 0.5f, tileDetails.gridY + 0.5f, 0);
 
-        var cropInstance = Instantiate(cropPrefab, pos, Quaternion.identity, cropParent);
+        GameObject cropInstance = Instantiate(cropPrefab, pos, Quaternion.identity, cropParent);
         cropInstance.GetComponentInChildren<SpriteRenderer>().sprite = cropSprite;
 
         cropInstance.GetComponent<Crop>().cropDetails = cropDetails;

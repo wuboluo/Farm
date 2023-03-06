@@ -48,19 +48,19 @@ public class GridMap : MonoBehaviour
             if (mapData != null)
             {
                 // 已绘制范围的左下角坐标
-                var startPos = currentTilemap.cellBounds.min;
+                Vector3Int startPos = currentTilemap.cellBounds.min;
 
                 // 已绘制范围的右上角坐标
-                var endPos = currentTilemap.cellBounds.max;
+                Vector3Int endPos = currentTilemap.cellBounds.max;
 
-                for (var x = startPos.x; x < endPos.x; x++)
-                for (var y = startPos.y; y < endPos.y; y++)
+                for (int x = startPos.x; x < endPos.x; x++)
+                for (int y = startPos.y; y < endPos.y; y++)
                 {
-                    var tile = currentTilemap.GetTile(new Vector3Int(x, y, 0));
+                    TileBase tile = currentTilemap.GetTile(new Vector3Int(x, y, 0));
 
                     if (tile != null)
                     {
-                        var newTile = new TileProperty
+                        TileProperty newTile = new TileProperty
                         {
                             tileCoordinate = new Vector2Int(x, y),
                             gridType = gridType,

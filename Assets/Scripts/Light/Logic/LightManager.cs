@@ -30,7 +30,7 @@ public class LightManager : MonoBehaviour
     {
         sceneLights = FindObjectsOfType<LightControl>();
 
-        foreach (var lightControl in sceneLights)
+        foreach (LightControl lightControl in sceneLights)
             // 改变灯光
             lightControl.ChangeLightShift(currentSeason, currentLightShift, timeDifference);
     }
@@ -44,7 +44,7 @@ public class LightManager : MonoBehaviour
         {
             currentLightShift = lightShift;
 
-            foreach (var lightControl in sceneLights)
+            foreach (LightControl lightControl in sceneLights)
                 // 改变灯光的方法
                 lightControl.ChangeLightShift(currentSeason, currentLightShift, this.timeDifference);
         }

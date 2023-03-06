@@ -44,7 +44,7 @@ public class UIManager : MonoBehaviour
 
     private void TogglePausePanel(  )
     {
-        var isOpen = pausePanel.activeInHierarchy;
+        bool isOpen = pausePanel.activeInHierarchy;
         if (isOpen)
         {
             pausePanel.SetActive(false);

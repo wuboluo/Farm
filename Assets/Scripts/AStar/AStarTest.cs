@@ -41,7 +41,7 @@ namespace Y.AStar
             if (moveNpc)
             {
                 moveNpc = false;
-                var schedule = new ScheduleDetails(0, 0, 0, 0, Season.春天, targetScene, targetPos, stopClip, true);
+                ScheduleDetails schedule = new ScheduleDetails(0, 0, 0, 0, Season.春天, targetScene, targetPos, stopClip, true);
                 npcMovement.BuildPath(schedule);
             }
         }
@@ -63,11 +63,11 @@ namespace Y.AStar
 
                 if (displayPath)
                 {
-                    var sceneName = SceneManager.GetActiveScene().name;
+                    string sceneName = SceneManager.GetActiveScene().name;
 
                     aStar.BuildPath(sceneName, startPos, finishPos, npcMovementStepStack);
 
-                    foreach (var step in npcMovementStepStack)
+                    foreach (MovementStep step in npcMovementStepStack)
                     {
                         displayMap.SetTile((Vector3Int) step.gridCoordinate, displayTile);
                     }
@@ -76,7 +76,7 @@ namespace Y.AStar
                 {
                     if (npcMovementStepStack.Count > 0)
                     {
-                        foreach (var step in npcMovementStepStack)
+                        foreach (MovementStep step in npcMovementStepStack)
                         {
                             displayMap.SetTile((Vector3Int) step.gridCoordinate, null);
                         }

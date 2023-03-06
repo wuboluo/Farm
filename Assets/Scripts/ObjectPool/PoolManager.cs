@@ -31,7 +31,7 @@ public class PoolManager : MonoBehaviour
 
     private void OnParticleEffect(ParticleEffectType effectType, Vector3 pos)
     {
-        var objPool = effectType switch
+        ObjectPool<GameObject> objPool = effectType switch
         {
             ParticleEffectType.LeavesFalling01 => poolEffectList[0],
             ParticleEffectType.LeavesFalling02 => poolEffectList[1],
@@ -42,7 +42,7 @@ public class PoolManager : MonoBehaviour
 
         if (objPool != null)
         {
-            var obj = objPool.Get();
+            GameObject obj = objPool.Get();
             obj.transform.position = pos;
             StartCoroutine(ReleaseRoutine(objPool, obj));
         }
@@ -51,14 +51,14 @@ public class PoolManager : MonoBehaviour
     /// 生成对象池
     private void CreatePool()
     {
-        foreach (var item in poolPrefabs)
+        foreach (GameObject item in poolPrefabs)
         {
             // 为每一种对象创建一个父节点，并同意放至 PoolMgr下
-            var parent = new GameObject(item.name).transform;
+            Transform parent = new GameObject(item.name).transform;
             parent.SetParent(transform);
 
             // 使用官方提供的 objectPool 对象，并设置其事件
-            var newPool = new ObjectPool<GameObject>
+            ObjectPool<GameObject> newPool = new ObjectPool<GameObject>
             (
                 () => Instantiate(item, parent),
                 e => e.SetActive(true),
@@ -95,12 +95,12 @@ public class PoolManager : MonoBehaviour
 
     private void CreateSoundPool()
     {
-        var parent = new GameObject(poolPrefabs[4].name).transform;
+        Transform parent = new GameObject(poolPrefabs[4].name).transform;
         parent.SetParent(transform);
 
-        for (var i = 0; i < 20; i++)
+        for (int i = 0; i < 20; i++)
         {
-            var newObj = Instantiate(poolPrefabs[4], parent);
+            GameObject newObj = Instantiate(poolPrefabs[4], parent);
             newObj.SetActive(false);
             soundQueue.Enqueue(newObj);
         }
@@ -114,7 +114,7 @@ public class PoolManager : MonoBehaviour
 
     private void InitSoundEffect(SoundDetails soundDetails)
     {
-        var obj = GetPoolObject();
+        GameObject obj = GetPoolObject();
         obj.GetComponent<Sound>().SetSound(soundDetails);
         obj.SetActive(true);
 

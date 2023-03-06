@@ -4,17 +4,17 @@ public class TriggerItemFader : MonoBehaviour
 {
     private void OnTriggerEnter2D(Collider2D other)
     {
-        var faders = other.GetComponentsInChildren<ItemFader>();
+        ItemFader[] faders = other.GetComponentsInChildren<ItemFader>();
 
         if (faders.Length <= 0) return;
-        foreach (var item in faders) item.FadeOut();
+        foreach (ItemFader item in faders) item.FadeOut();
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        var faders = other.GetComponentsInChildren<ItemFader>();
+        ItemFader[] faders = other.GetComponentsInChildren<ItemFader>();
 
         if (faders.Length <= 0) return;
-        foreach (var item in faders) item.FadeIn();
+        foreach (ItemFader item in faders) item.FadeIn();
     }
 }

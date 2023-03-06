@@ -64,7 +64,7 @@ namespace Y.Inventory
         public void InitBox(int boxIndex)
         {
             index = boxIndex;
-            var key = name + index;
+            string key = name + index;
 
             // 刷新地图读取数据
             if (InventoryManager.Instance.GetBoxDataList(key) != null)

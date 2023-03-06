@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -12,7 +13,7 @@ public class ItemEditor : EditorWindow
 
     // 默认图标
     private Sprite defaultIcon;
-    
+
     private List<ItemDetails> itemList = new();
 
     // 获得 VisualElement
@@ -26,14 +27,14 @@ public class ItemEditor : EditorWindow
     public void CreateGUI()
     {
         // Each editor window contains a root VisualElement object
-        var root = rootVisualElement;
+        VisualElement root = rootVisualElement;
 
         // VisualElements objects can contain other VisualElement following a tree hierarchy.
         // VisualElement label = new Label("Hello World! From C#");
         // root.Add(label);
 
         // Import UXML
-        var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/UI Builder/ItemEditor.uxml");
+        VisualTreeAsset visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/UI Builder/ItemEditor.uxml");
         VisualElement labelFromUXML = visualTree.Instantiate();
         root.Add(labelFromUXML);
 
@@ -63,7 +64,7 @@ public class ItemEditor : EditorWindow
     [MenuItem("Y STUDIO/ItemEditor")]
     public static void ShowExample()
     {
-        var wnd = GetWindow<ItemEditor>();
+        ItemEditor wnd = GetWindow<ItemEditor>();
         wnd.titleContent = new GUIContent("ItemEditor");
     }
 
@@ -77,7 +78,7 @@ public class ItemEditor : EditorWindow
 
     private void OnAddButtonClicked()
     {
-        var newItem = new ItemDetails
+        ItemDetails newItem = new ItemDetails
         {
             itemName = "New Item",
             itemID = 1001 + itemList.Count
@@ -89,11 +90,11 @@ public class ItemEditor : EditorWindow
 
     private void LoadDataBase()
     {
-        var dataArray = AssetDatabase.FindAssets("ItemDataListSO");
+        string[] dataArray = AssetDatabase.FindAssets("ItemDataListSO");
 
         if (dataArray.Length >= 1)
         {
-            var path = AssetDatabase.GUIDToAssetPath(dataArray[0]);
+            string path = AssetDatabase.GUIDToAssetPath(dataArray[0]);
             dataBase = AssetDatabase.LoadAssetAtPath(path, typeof(ItemDataListSO)) as ItemDataListSO;
         }
 
@@ -104,12 +105,11 @@ public class ItemEditor : EditorWindow
         EditorUtility.SetDirty(dataBase);
     }
 
+
+    // 生成左侧的列表
     private void GenerateListView()
     {
-        VisualElement MakeItem()
-        {
-            return itemRowTemplate.CloneTree();
-        }
+        VisualElement MakeItem() => itemRowTemplate.CloneTree();
 
         void BindItem(VisualElement e, int i)
         {
@@ -136,9 +136,9 @@ public class ItemEditor : EditorWindow
     private void OnListSelectionChange(IEnumerable<object> selectedItem)
     {
         // todo:在左侧列表允许被重新排列时，拖动物品经过其他物品时会报异常，所以在此处进行判断，或许会有更合理的办法
-        var enumerable = selectedItem as object[] ?? selectedItem.ToArray();
+        object[] enumerable = selectedItem as object[] ?? selectedItem.ToArray();
         if (enumerable.ToList().Count <= 0) return;
-        
+
         activeItem = enumerable.First() as ItemDetails;
         GetItemDetails();
 
@@ -169,7 +169,7 @@ public class ItemEditor : EditorWindow
         itemDetailsSection.Q<ObjectField>("ItemIcon").RegisterValueChangedCallback(evt =>
         {
             // 如果选择的 item没有配置图标，则使用 item默认图标
-            var newIcon = evt.newValue as Sprite;
+            Sprite newIcon = evt.newValue as Sprite;
             activeItem.itemIcon = newIcon;
             iconPreview.style.backgroundImage = newIcon == null ? defaultIcon.texture : newIcon.texture;
 
@@ -183,7 +183,7 @@ public class ItemEditor : EditorWindow
         // 类型
         itemDetailsSection.Q<EnumField>("ItemType").Init(activeItem.itemType);
         itemDetailsSection.Q<EnumField>("ItemType").value = activeItem.itemType;
-        itemDetailsSection.Q<EnumField>("ItemType").RegisterValueChangedCallback(evt => activeItem.itemType = (ItemType) evt.newValue);
+        itemDetailsSection.Q<EnumField>("ItemType").RegisterValueChangedCallback(evt => activeItem.itemType = (ItemType)evt.newValue);
 
         // 描述
         itemDetailsSection.Q<TextField>("Description").value = activeItem.itemDescription;
@@ -194,8 +194,8 @@ public class ItemEditor : EditorWindow
         itemDetailsSection.Q<IntegerField>("ItemUseRadius").RegisterValueChangedCallback(evt => activeItem.itemUseRadius = evt.newValue);
 
         // 可否被拾取
-        itemDetailsSection.Q<Toggle>("CanPickedup").value = activeItem.canPickedup;
-        itemDetailsSection.Q<Toggle>("CanPickedup").RegisterValueChangedCallback(evt => activeItem.canPickedup = evt.newValue);
+        itemDetailsSection.Q<Toggle>("CanPickedup").value = activeItem.canPickedUp;
+        itemDetailsSection.Q<Toggle>("CanPickedup").RegisterValueChangedCallback(evt => activeItem.canPickedUp = evt.newValue);
 
         // 可否被丢弃
         itemDetailsSection.Q<Toggle>("CanDropped").value = activeItem.canDropped;

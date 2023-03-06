@@ -16,7 +16,7 @@ public class AnimatorOverride : MonoBehaviour
     {
         animators = GetComponentsInChildren<Animator>();
 
-        foreach (var anim in animators) animatorNameDict.Add(anim.name, anim);
+        foreach (Animator anim in animators) animatorNameDict.Add(anim.name, anim);
     }
 
     private void OnEnable()
@@ -43,7 +43,7 @@ public class AnimatorOverride : MonoBehaviour
 
     private void OnHarvestAtPlayerPosition(int id)
     {
-        var itemSprite = InventoryManager.Instance.GetItemDetails(id).ItemOnWorldSprite;
+        Sprite itemSprite = InventoryManager.Instance.GetItemDetails(id).ItemOnWorldSprite;
 
         if (holdItem.enabled == false) StartCoroutine(ShowItem(itemSprite));
     }
@@ -60,7 +60,7 @@ public class AnimatorOverride : MonoBehaviour
     private void OnItemSelectedEvent(ItemDetails details, bool isSelected)
     {
         // todo: 不同的工具返回不同动画 在这里补全
-        var currentType = details.itemType switch
+        PartType currentType = details.itemType switch
         {
             ItemType.Seed => PartType.Carry,
             ItemType.Commodity => PartType.Carry,
@@ -107,7 +107,7 @@ public class AnimatorOverride : MonoBehaviour
 
         // 遍历配置好的不同状态下的动画，根据当前的人物状态（举起或不举起或其它）去寻找对应的动画，为了实现在举着东西的时候抬手，否则自然下垂
         // 注意此时 item.partName是要和 animator文件名称一致，从开始存入的字典里面找到对应的 animator组件，替换为新状态下的 animator，实现动作切换
-        foreach (var item in animatorTypes)
+        foreach (AnimatorType item in animatorTypes)
             if (item.partType == partType)
                 animatorNameDict[item.partName.ToString()].runtimeAnimatorController = item.overrideController;
 

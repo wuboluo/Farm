@@ -5,36 +5,43 @@ using UnityEngine;
 [Serializable]
 public class ItemDetails
 {
+    // 物品惟一ID，名称
     public int itemID;
     public string itemName;
 
+    // 物品类型（例如种子、商品、家具等）
     public ItemType itemType;
 
+    // UI和道具编辑器上的图标
     public Sprite itemIcon;
-
     // 在世界地图上产生时所显示的图片
     public Sprite ItemOnWorldSprite;
 
+    // 物品描述
     public string itemDescription;
 
-    // 使用范围
+    // 使用范围（周围几个网格内可以使用）
     public int itemUseRadius;
 
-    // 是否可被拾取，丢弃，举着
-    public bool canPickedup;
+    // 是否可被拾取、丢弃、举起
+    public bool canPickedUp;
     public bool canDropped;
     public bool canCarried;
 
     // 价值
     public int itemPrice;
-
     // 出售折损比例
-    [Range(0, 1)] public float sellPercentage;
+    [Range(0, 1)] 
+    public float sellPercentage;
 }
 
+// 仓库物品结构
 [Serializable]
 public struct InventoryItem
 {
+    // 在仓库内（背包、储物箱、货架等）保存物品用的结构
+    // 使用 struct而不是class的原因是：struct会避免检查空的步骤，而是直接用 itemID去判断此位置是否为空。同时移除物品的时候也只需要清零即可，无需删除
+    
     public int itemID;
     public int itemAmount;
 }

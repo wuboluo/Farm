@@ -24,7 +24,7 @@ public class LightControl : MonoBehaviour
         if (timeDifference < Settings.lightChangeDuration)
         {
             // 根据时间差占有设置的 lightChangeDuration的半分比计算当前应该显示的颜色数值
-            var colorOffset = (currentLightDetails.lightColor - currentLight.color) / Settings.lightChangeDuration * timeDifference;
+            Color colorOffset = (currentLightDetails.lightColor - currentLight.color) / Settings.lightChangeDuration * timeDifference;
             currentLight.color += colorOffset;
 
             DOTween.To(() => currentLight.color, c => currentLight.color = c, currentLightDetails.lightColor, Settings.lightChangeDuration - timeDifference);

@@ -5,7 +5,7 @@ using Y.Save;
 
 namespace Y.Transition
 {
-    public class TransitionManager : Singleton<TransitionManager>, ISaveable
+    public class TransitionManager : Singleton<TransitionManager>, ISavable
     {
         [SceneName] public string startSceneName = string.Empty;
 
@@ -23,8 +23,8 @@ namespace Y.Transition
 
         private void Start()
         {
-            ISaveable saveable = this;
-            saveable.RegisterSaveable();
+            ISavable savable = this;
+            savable.RegisterSavable();
 
             fadeCanvasGroup = FindObjectOfType<CanvasGroup>();
         }
@@ -60,7 +60,7 @@ namespace Y.Transition
 
         public GameSaveData GenerateSaveData()
         {
-            var saveData = new GameSaveData();
+            GameSaveData saveData = new GameSaveData();
             saveData.dataSceneName = SceneManager.GetActiveScene().name;
 
             return saveData;
@@ -121,7 +121,7 @@ namespace Y.Transition
         {
             yield return SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
 
-            var newScene = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);
+            Scene newScene = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);
 
             SceneManager.SetActiveScene(newScene);
         }
@@ -132,7 +132,7 @@ namespace Y.Transition
             isFade = true;
             fadeCanvasGroup.blocksRaycasts = true;
 
-            var speed = Mathf.Abs(fadeCanvasGroup.alpha - targetAlpha) / Settings.fadeDuration;
+            float speed = Mathf.Abs(fadeCanvasGroup.alpha - targetAlpha) / Settings.fadeDuration;
 
             // Mathf.Approximately
             // https://docs.unity.cn/cn/current/ScriptReference/Mathf.Approximately.html

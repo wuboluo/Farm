@@ -59,7 +59,7 @@ namespace Yang.Dialogue
         {
             dialogueStack = new Stack<DialoguePiece>();
 
-            for (var i = dialogueList.Count - 1; i >= 0; i--)
+            for (int i = dialogueList.Count - 1; i >= 0; i--)
             {
                 dialogueList[i].isDone = false;
                 dialogueStack.Push(dialogueList[i]);
@@ -70,7 +70,7 @@ namespace Yang.Dialogue
         {
             isTalking = true;
 
-            if (dialogueStack.TryPop(out var result))
+            if (dialogueStack.TryPop(out DialoguePiece result))
             {
                 //传到 UI显示对话
                 EventHandler.CallShowDialogueEvent(result);

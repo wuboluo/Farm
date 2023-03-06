@@ -35,7 +35,7 @@ namespace Y.Inventory
                 spriteRenderer.sprite = itemDetails.ItemOnWorldSprite ? itemDetails.ItemOnWorldSprite : itemDetails.itemIcon;
 
                 // 修改碰撞体尺寸
-                var newSize = new Vector2(spriteRenderer.sprite.bounds.size.x, spriteRenderer.sprite.bounds.size.y);
+                Vector2 newSize = new Vector2(spriteRenderer.sprite.bounds.size.x, spriteRenderer.sprite.bounds.size.y);
                 coll.size = newSize;
                 coll.offset = new Vector2(0, spriteRenderer.sprite.bounds.center.y);
                

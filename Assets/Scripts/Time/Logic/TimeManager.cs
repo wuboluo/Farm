@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Y.Save;
 
-public class TimeManager : Singleton<TimeManager>, ISaveable
+public class TimeManager : Singleton<TimeManager>, ISavable
 {
     // 控制时间的暂停
     public bool gameClockPause;
@@ -23,8 +23,8 @@ public class TimeManager : Singleton<TimeManager>, ISaveable
 
     private void Start()
     {
-        ISaveable saveable = this;
-        saveable.RegisterSaveable();
+        ISavable savable = this;
+        savable.RegisterSavable();
 
         gameClockPause = true;
 
@@ -49,7 +49,7 @@ public class TimeManager : Singleton<TimeManager>, ISaveable
 
         // 作弊选项
         if (Input.GetKey(KeyCode.T))
-            for (var i = 0; i < 120; i++)
+            for (int i = 0; i < 120; i++)
                 UpdateGameTime();
 
         if (Input.GetKeyDown(KeyCode.G))
@@ -82,7 +82,7 @@ public class TimeManager : Singleton<TimeManager>, ISaveable
 
     public GameSaveData GenerateSaveData()
     {
-        var saveData = new GameSaveData();
+        GameSaveData saveData = new GameSaveData();
 
         saveData.timeDict = new Dictionary<string, int>();
         saveData.timeDict.Add("gameYear", gameYear);
@@ -164,7 +164,7 @@ public class TimeManager : Singleton<TimeManager>, ISaveable
                             monthInSeason = 3;
 
                             // 根据当前季节，获取下一个季节的序号
-                            var seasonNumber = (int) gameSeason;
+                            int seasonNumber = (int) gameSeason;
                             seasonNumber++;
 
                             // 当季节交替 3次以后，认为当前已经过去一年

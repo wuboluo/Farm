@@ -8,14 +8,13 @@ namespace Y.Save
     public class SaveLoadManager : Singleton<SaveLoadManager>
     {
         // 每一个有数据需要保存的物体的数据集合（timeMgr，player，npcMovement……等等）
-        private readonly List<ISaveable> saveableList = new();
+        private readonly List<ISavable> savableList = new();
         private int currentDataIndex;
 
-        public List<DataSlot> dataSlots = new(new DataSlot[3]);
+        public readonly List<DataSlot> dataSlots = new(new DataSlot[3]);
 
         // 数据保存到本地的目录
         private string jsonFolder;
-
 
         protected override void Awake()
         {
@@ -56,45 +55,49 @@ namespace Y.Save
             currentDataIndex = index;
         }
 
-        /// 在每一个继承 ISaveable（即挂在了 dataGUID脚本的物体） 的 start方法中自动注册，添加到 list中
-        public void RegisterSaveable(ISaveable saveable)
+        /// 在每一个继承 ISavable（即挂在了 dataGUID脚本的物体） 的 start方法中自动注册，添加到 list中
+        public void RegisterSavable(ISavable savable)
         {
-            if (!saveableList.Contains(saveable)) saveableList.Add(saveable);
+            if (!savableList.Contains(savable)) savableList.Add(savable);
         }
 
         /// 读游戏进度
         private void ReadSaveData()
         {
             if (Directory.Exists(jsonFolder))
-                for (var i = 0; i < dataSlots.Count; i++)
+            {
+                for (int i = 0; i < dataSlots.Count; i++)
                 {
-                    var resultPath = jsonFolder + "data" + i + ".json";
+                    string resultPath = jsonFolder + "data" + i + ".json";
                     if (File.Exists(resultPath))
                     {
-                        var stringData = File.ReadAllText(resultPath);
-                        var jsonData = JsonConvert.DeserializeObject<DataSlot>(stringData);
+                        string stringData = File.ReadAllText(resultPath);
+                        DataSlot jsonData = JsonConvert.DeserializeObject<DataSlot>(stringData);
                         dataSlots[i] = jsonData;
                     }
                 }
+            }
         }
 
 
         /// 保存游戏数据到指定的存档（目前最多 3 个）
-        public void Save(int index)
+        private void Save(int index)
         {
-            var data = new DataSlot();
-            foreach (var saveable in saveableList)
+            DataSlot data = new DataSlot();
+            foreach (ISavable saveable in savableList)
+            {
                 // 把每一个需要保存的【物体对应的 guid】和【物体的具体的数据】对应保存到存档数据大集合中
                 data.dataDict.Add(saveable.GUID, saveable.GenerateSaveData());
+            }
 
             dataSlots[index] = data;
 
 
-            var resultPath = jsonFolder + "data" + index + ".json";
+            string resultPath = jsonFolder + "data" + index + ".json";
 
             // 序列化 json
             // Formatting.Indented：内容回行，看起来整齐方便。实际开发可以不写，尽量乱一点避免修改数据
-            var jsonData = JsonConvert.SerializeObject(dataSlots[index], Formatting.Indented);
+            string jsonData = JsonConvert.SerializeObject(dataSlots[index], Formatting.Indented);
 
             if (!File.Exists(resultPath)) Directory.CreateDirectory(jsonFolder);
 
@@ -107,14 +110,18 @@ namespace Y.Save
         {
             currentDataIndex = index;
 
-            var resultPath = jsonFolder + "data" + index + ".json";
-            var stringData = File.ReadAllText(resultPath);
-            var jsonData = JsonConvert.DeserializeObject<DataSlot>(stringData);
+            string resultPath = jsonFolder + "data" + index + ".json";
+            string stringData = File.ReadAllText(resultPath);
+            DataSlot jsonData = JsonConvert.DeserializeObject<DataSlot>(stringData);
 
-            foreach (var saveable in saveableList)
+            foreach (ISavable savable in savableList)
+            {
                 if (jsonData != null)
+                {
                     // 通过每一个数据物体的 guid，让他们自己去读取数据
-                    saveable.RestoreData(jsonData.dataDict[saveable.GUID]);
+                    savable.RestoreData(jsonData.dataDict[savable.GUID]);
+                }
+            }
         }
     }
 }

@@ -6,7 +6,7 @@ using Y.Save;
 
 namespace Y.Inventory
 {
-    public class ItemManager : MonoBehaviour, ISaveable
+    public class ItemManager : MonoBehaviour, ISavable
     {
         public Item itemPrefab;
         public Item bouncePrefab;
@@ -21,8 +21,8 @@ namespace Y.Inventory
 
         private void Start()
         {
-            ISaveable saveable = this;
-            saveable.RegisterSaveable();
+            ISavable savable = this;
+            savable.RegisterSavable();
         }
 
         private void OnEnable()
@@ -56,7 +56,7 @@ namespace Y.Inventory
             GetAllSceneItems();
             GetAllSceneFurniture();
 
-            var saveData = new GameSaveData();
+            GameSaveData saveData = new GameSaveData();
             saveData.sceneItemDict = sceneItemDict;
             saveData.sceneFurnitureDict = sceneFurnitureDict;
 
@@ -98,7 +98,7 @@ namespace Y.Inventory
         // 在指定坐标位置生成物品
         private void OnInstantiateItemInScene(int id, Vector3 pos)
         {
-            var item = Instantiate(bouncePrefab, pos, Quaternion.identity, itemParent);
+            Item item = Instantiate(bouncePrefab, pos, Quaternion.identity, itemParent);
             item.itemID = id;
 
             item.GetComponent<ItemBounce>().InitBounceItem(pos, Vector3.up);
@@ -110,10 +110,10 @@ namespace Y.Inventory
         {
             if (itemType == ItemType.Seed) return;
 
-            var item = Instantiate(bouncePrefab, PlayerTransform.position, Quaternion.identity, itemParent);
+            Item item = Instantiate(bouncePrefab, PlayerTransform.position, Quaternion.identity, itemParent);
             item.itemID = id;
 
-            var dir = (mousePos - PlayerTransform.position).normalized;
+            Vector3 dir = (mousePos - PlayerTransform.position).normalized;
             item.GetComponent<ItemBounce>().InitBounceItem(mousePos, dir);
         }
 
@@ -121,7 +121,7 @@ namespace Y.Inventory
         private void GetAllSceneItems()
         {
             // 通过 item类型找到所有 item物体
-            var currentSceneItems = FindObjectsOfType<Item>().Select(
+            List<SceneItem> currentSceneItems = FindObjectsOfType<Item>().Select(
                 item => new SceneItem {itemID = item.itemID, position = new SerializableVector3(item.transform.position)}).ToList();
 
             // 如果字典中包含当前激活的场景，则更新场景里物体
@@ -136,18 +136,18 @@ namespace Y.Inventory
         // 刷新重建当前场景的 item
         private void RecreateAllItems()
         {
-            if (sceneItemDict.TryGetValue(SceneManager.GetActiveScene().name, out var currentSceneItems))
+            if (sceneItemDict.TryGetValue(SceneManager.GetActiveScene().name, out List<SceneItem> currentSceneItems))
             {
                 // 如果没有记录过这个场景的 item信息，跳出
                 if (currentSceneItems == null) return;
 
                 // 找到这个场景中的所有 item，并删除
-                foreach (var item in FindObjectsOfType<Item>()) Destroy(item.gameObject);
+                foreach (Item item in FindObjectsOfType<Item>()) Destroy(item.gameObject);
 
                 // 根据记录中当前场景所存在的 item信息，重新实例，设置位置和 ID
-                foreach (var item in currentSceneItems)
+                foreach (SceneItem item in currentSceneItems)
                 {
-                    var newItem = Instantiate(itemPrefab, item.position.ToVector3(), Quaternion.identity, itemParent);
+                    Item newItem = Instantiate(itemPrefab, item.position.ToVector3(), Quaternion.identity, itemParent);
                     newItem.Init(item.itemID);
                 }
             }
@@ -156,8 +156,8 @@ namespace Y.Inventory
         private void OnBuildFurniture(int id, Vector3 mousePos)
         {
             // 根据蓝图实例一个家具
-            var bluePrint = InventoryManager.Instance.bluePrintData.GetBluePrintDetails(id);
-            var buildItem = Instantiate(bluePrint.buildPrefab, mousePos, Quaternion.identity, itemParent);
+            BluePrintDetails bluePrint = InventoryManager.Instance.bluePrintData.GetBluePrintDetails(id);
+            GameObject buildItem = Instantiate(bluePrint.buildPrefab, mousePos, Quaternion.identity, itemParent);
 
             // 如果这个家具是一个储物箱
             if (buildItem.GetComponent<Box>())
@@ -173,12 +173,12 @@ namespace Y.Inventory
         // 获取当前场景中所有 Furniture
         private void GetAllSceneFurniture()
         {
-            var currentSceneFurniture = new List<SceneFurniture>();
+            List<SceneFurniture> currentSceneFurniture = new List<SceneFurniture>();
 
             // 通过 Furniture类型找到所有 Furniture物体
-            foreach (var furniture in FindObjectsOfType<Furniture>())
+            foreach (Furniture furniture in FindObjectsOfType<Furniture>())
             {
-                var sceneFurniture = new SceneFurniture
+                SceneFurniture sceneFurniture = new SceneFurniture
                 {
                     furnitureID = furniture.furnitureID,
                     position = new SerializableVector3(furniture.transform.position)
@@ -201,14 +201,14 @@ namespace Y.Inventory
         private void RebuildFurniture()
         {
             // 如果当前场景存在已保存的家具列表
-            if (sceneFurnitureDict.TryGetValue(SceneManager.GetActiveScene().name, out var currentSceneFurniture))
+            if (sceneFurnitureDict.TryGetValue(SceneManager.GetActiveScene().name, out List<SceneFurniture> currentSceneFurniture))
                 // 且这个家具列表不为空，代表保存了一些家具
                 if (currentSceneFurniture != null)
-                    foreach (var sceneFurniture in currentSceneFurniture)
+                    foreach (SceneFurniture sceneFurniture in currentSceneFurniture)
                     {
                         // 遍历保存的这些家具
-                        var bluePrint = InventoryManager.Instance.bluePrintData.GetBluePrintDetails(sceneFurniture.furnitureID);
-                        var buildItem = Instantiate(bluePrint.buildPrefab, sceneFurniture.position.ToVector3(), Quaternion.identity, itemParent);
+                        BluePrintDetails bluePrint = InventoryManager.Instance.bluePrintData.GetBluePrintDetails(sceneFurniture.furnitureID);
+                        GameObject buildItem = Instantiate(bluePrint.buildPrefab, sceneFurniture.position.ToVector3(), Quaternion.identity, itemParent);
 
                         if (buildItem.GetComponent<Box>()) buildItem.GetComponent<Box>().InitBox(sceneFurniture.boxIndex);
                     }

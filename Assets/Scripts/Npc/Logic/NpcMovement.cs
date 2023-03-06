@@ -8,7 +8,7 @@ using Y.Save;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Animator))]
-public class NpcMovement : MonoBehaviour, ISaveable
+public class NpcMovement : MonoBehaviour, ISavable
 {
     public ScheduleDetailsListSO scheduleData;
 
@@ -73,13 +73,13 @@ public class NpcMovement : MonoBehaviour, ISaveable
         animator.runtimeAnimatorController = animatorOverride;
 
         scheduleSet = new SortedSet<ScheduleDetails>();
-        foreach (var schedule in scheduleData.scheduleDetails) scheduleSet.Add(schedule);
+        foreach (ScheduleDetails schedule in scheduleData.scheduleDetails) scheduleSet.Add(schedule);
     }
 
     private void Start()
     {
-        ISaveable saveable = this;
-        saveable.RegisterSaveable();
+        ISavable savable = this;
+        savable.RegisterSavable();
     }
 
     private void Update()
@@ -122,7 +122,7 @@ public class NpcMovement : MonoBehaviour, ISaveable
 
     public GameSaveData GenerateSaveData()
     {
-        var saveData = new GameSaveData();
+        GameSaveData saveData = new GameSaveData();
         saveData.characterPosDict = new Dictionary<string, SerializableVector3>();
 
         saveData.characterPosDict.Add("targetGridPosition", new SerializableVector3(targetGridPosition));
@@ -149,8 +149,8 @@ public class NpcMovement : MonoBehaviour, ISaveable
         currentScene = saveData.dataSceneName;
         targetScene = saveData.targetScene;
 
-        var pos = saveData.characterPosDict["currentGridPosition"].ToVector3();
-        var targetGridPos = (Vector3Int) saveData.characterPosDict["targetGridPosition"].ToVector2Int();
+        Vector3 pos = saveData.characterPosDict["currentGridPosition"].ToVector3();
+        Vector3Int targetGridPos = (Vector3Int) saveData.characterPosDict["targetGridPosition"].ToVector2Int();
 
         transform.position = pos;
         targetGridPosition = targetGridPos;
@@ -197,7 +197,7 @@ public class NpcMovement : MonoBehaviour, ISaveable
         if (!isFirstLoad)
         {
             currentGridPosition = grid.WorldToCell(transform.position);
-            var schedule = new ScheduleDetails(0, 0, 0, 0, currentSeason, targetScene, (Vector2Int) targetGridPosition, stopAnimationClip, interactable);
+            ScheduleDetails schedule = new ScheduleDetails(0, 0, 0, 0, currentSeason, targetScene, (Vector2Int) targetGridPosition, stopAnimationClip, interactable);
             BuildPath(schedule);
             isFirstLoad = true;
         }
@@ -205,11 +205,11 @@ public class NpcMovement : MonoBehaviour, ISaveable
 
     private void OnGameMinuteEvent(int minute, int hour, int day, Season season)
     {
-        var time = hour * 100 + minute;
+        int time = hour * 100 + minute;
         currentSeason = season;
 
         ScheduleDetails matchSchedule = null;
-        foreach (var schedule in scheduleSet)
+        foreach (ScheduleDetails schedule in scheduleSet)
             if (schedule.Time == time)
             {
                 if (schedule.day != day && schedule.day != 0) continue;
@@ -255,7 +255,7 @@ public class NpcMovement : MonoBehaviour, ISaveable
             if (movementSteps.Count > 0)
             {
                 // 拿到第一步
-                var step = movementSteps.Pop();
+                MovementStep step = movementSteps.Pop();
 
                 // 检查第一步是否应该出现在这个场景里
                 currentScene = step.sceneName;
@@ -267,7 +267,7 @@ public class NpcMovement : MonoBehaviour, ISaveable
                 nextGridPosition = (Vector3Int) step.gridCoordinate;
 
                 // 拿到当前步（非下一步）的时间戳，对比当前的游戏时间，如果还没到下一步的时间戳，则可以缓慢移动过去，否则需要瞬移过去
-                var stepTime = new TimeSpan(step.hour, step.minute, step.second);
+                TimeSpan stepTime = new TimeSpan(step.hour, step.minute, step.second);
 
                 MoveToGridPosition(nextGridPosition, stepTime);
             }
@@ -292,11 +292,11 @@ public class NpcMovement : MonoBehaviour, ISaveable
         if (stepTime > GameTime)
         {
             // 用来移动的时间差，以秒为单位
-            var timeToMove = (float) (stepTime.TotalSeconds - GameTime.TotalSeconds);
+            float timeToMove = (float) (stepTime.TotalSeconds - GameTime.TotalSeconds);
             // 实际移动距离
-            var distance = Vector3.Distance(transform.position, nextWorldPosition);
+            float distance = Vector3.Distance(transform.position, nextWorldPosition);
             // 实际移动速度
-            var speed = Mathf.Max(minSpeed, distance / timeToMove / Settings.secondThreshold);
+            float speed = Mathf.Max(minSpeed, distance / timeToMove / Settings.secondThreshold);
 
             if (speed <= maxSpeed)
                 // 如果和目标点距离小于像素距离，认为到达
@@ -304,7 +304,7 @@ public class NpcMovement : MonoBehaviour, ISaveable
                 {
                     dir = (nextWorldPosition - transform.position).normalized;
 
-                    var posOffset = new Vector2(dir.x * speed * Time.fixedDeltaTime, dir.y * speed * Time.fixedDeltaTime);
+                    Vector2 posOffset = new Vector2(dir.x * speed * Time.fixedDeltaTime, dir.y * speed * Time.fixedDeltaTime);
                     rb.MovePosition(rb.position + posOffset);
 
                     // 等待下一次 FixedUpdate的更新，再继续执行
@@ -340,10 +340,10 @@ public class NpcMovement : MonoBehaviour, ISaveable
         else if (schedule.targetScene != currentScene)
         {
             // 获取起始场景和目标场景，和衔接点位信息
-            var route = NpcManager.Instance.GetSceneRoute(currentScene, schedule.targetScene);
+            SceneRoute route = NpcManager.Instance.GetSceneRoute(currentScene, schedule.targetScene);
 
             if (route != null)
-                foreach (var path in route.scenePaths)
+                foreach (ScenePath path in route.scenePaths)
                 {
                     Vector2Int fromPos, gotoPos;
 
@@ -372,9 +372,9 @@ public class NpcMovement : MonoBehaviour, ISaveable
     private void UpdateTimeOnPath()
     {
         MovementStep previousStep = null;
-        var currentGameTime = GameTime;
+        TimeSpan currentGameTime = GameTime;
 
-        foreach (var step in movementSteps)
+        foreach (MovementStep step in movementSteps)
         {
             // 第一步
             previousStep ??= step;
@@ -386,7 +386,7 @@ public class NpcMovement : MonoBehaviour, ISaveable
             // 计算每一步的时间戳，计算走到下一步的时候应该处于游戏时间的几分几秒
             // 判断是否走斜方向，从而使用不同的距离
             // 走过下一格需要的时间（距离/速度=时间）
-            var gridMovementStepTime = MoveInDiagonal(step, previousStep)
+            TimeSpan gridMovementStepTime = MoveInDiagonal(step, previousStep)
                 ? new TimeSpan(0, 0, (int) (Settings.gridCellDiagonalSize / normalSpeed / Settings.secondThreshold))
                 : new TimeSpan(0, 0, (int) (Settings.gridCellSize / normalSpeed / Settings.secondThreshold));
 
@@ -408,7 +408,7 @@ public class NpcMovement : MonoBehaviour, ISaveable
     /// 网格坐标返回世界坐标中心点
     private Vector3 GetWorldPosition(Vector3Int gridPos)
     {
-        var worldPos = grid.CellToWorld(gridPos);
+        Vector3 worldPos = grid.CellToWorld(gridPos);
         return new Vector3(worldPos.x + Settings.gridCellSize / 2, worldPos.y + Settings.gridCellSize / 2);
     }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Y.Save;
 
-public class Player : MonoBehaviour, ISaveable
+public class Player : MonoBehaviour, ISavable
 {
     public float speed;
     private Animator[] animators;
@@ -30,8 +30,8 @@ public class Player : MonoBehaviour, ISaveable
 
     private void Start()
     {
-        ISaveable saveable = this;
-        saveable.RegisterSaveable();
+        ISavable savable = this;
+        savable.RegisterSavable();
     }
 
     private void Update()
@@ -73,7 +73,7 @@ public class Player : MonoBehaviour, ISaveable
 
     public GameSaveData GenerateSaveData()
     {
-        var saveData = new GameSaveData();
+        GameSaveData saveData = new GameSaveData();
         saveData.characterPosDict = new Dictionary<string, SerializableVector3>();
         saveData.characterPosDict.Add(name, new SerializableVector3(transform.position));
 
@@ -82,7 +82,7 @@ public class Player : MonoBehaviour, ISaveable
 
     public void RestoreData(GameSaveData saveData)
     {
-        var targetPosition = saveData.characterPosDict[name].ToVector3();
+        Vector3 targetPosition = saveData.characterPosDict[name].ToVector3();
         transform.position = targetPosition;
     }
 
@@ -138,7 +138,7 @@ public class Player : MonoBehaviour, ISaveable
         yield return null;
 
         // 将身体各个部位的动画切换为实用工具相关
-        foreach (var anim in animators)
+        foreach (Animator anim in animators)
         {
             anim.SetTrigger("useTool");
 
@@ -212,7 +212,7 @@ public class Player : MonoBehaviour, ISaveable
 
     private void SwitchAnimation()
     {
-        foreach (var anim in animators)
+        foreach (Animator anim in animators)
         {
             anim.SetBool("isMoving", isMoving);
 
