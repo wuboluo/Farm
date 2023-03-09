@@ -5,21 +5,24 @@ using Y.Save;
 
 public class Player : MonoBehaviour, ISavable
 {
+    private static readonly int UseTool = Animator.StringToHash("useTool");
+    private static readonly int IsMoving = Animator.StringToHash("isMoving");
+    private static readonly int InputX = Animator.StringToHash("InputX");
+    private static readonly int InputY = Animator.StringToHash("InputY");
+    private static readonly int MouseX = Animator.StringToHash("mouseX");
+    private static readonly int MouseY = Animator.StringToHash("mouseY");
+    
     public float speed;
     private Animator[] animators;
 
     private bool inputDisable;
-    private float inputX, inputY;
 
     private bool isMoving;
-
-    // 动画实用工具
     private float mouseX, mouseY;
+    private float inputX, inputY;
 
     private Vector2 movementInput;
     private Rigidbody2D rb;
-
-    private bool useTool;
 
     private void Awake()
     {
@@ -73,9 +76,15 @@ public class Player : MonoBehaviour, ISavable
 
     public GameSaveData GenerateSaveData()
     {
-        GameSaveData saveData = new GameSaveData();
-        saveData.characterPosDict = new Dictionary<string, SerializableVector3>();
-        saveData.characterPosDict.Add(name, new SerializableVector3(transform.position));
+        GameSaveData saveData = new GameSaveData
+        {
+            characterPosDict = new Dictionary<string, SerializableVector3>
+            {
+                {
+                    name, new SerializableVector3(transform.position)
+                }
+            }
+        };
 
         return saveData;
     }
@@ -133,18 +142,17 @@ public class Player : MonoBehaviour, ISavable
     private IEnumerator UseToolRoutine(Vector3 mouseWorldPos, ItemDetails details)
     {
         // 开始实用工具，并且不允许移动
-        useTool = true;
         inputDisable = true;
         yield return null;
 
         // 将身体各个部位的动画切换为实用工具相关
         foreach (Animator anim in animators)
         {
-            anim.SetTrigger("useTool");
+            anim.SetTrigger(UseTool);
 
             // 人物的朝向
-            anim.SetFloat("InputX", mouseX);
-            anim.SetFloat("InputY", mouseY);
+            anim.SetFloat(InputX, mouseX);
+            anim.SetFloat(InputY, mouseY);
         }
 
         // 0.45-大概为工具使用在地面或到位的地方的时的大概时间，取决于动画的速度
@@ -157,7 +165,6 @@ public class Player : MonoBehaviour, ISavable
         yield return new WaitForSeconds(0.25f);
 
         // 设置为没有在实用工具，并且可以移动
-        useTool = false;
         inputDisable = false;
     }
 
@@ -207,23 +214,23 @@ public class Player : MonoBehaviour, ISavable
     {
         // 俯视角的情况下，一般采用移动坐标的位置
         // *Time.deltaTim 为了适应不同设备下不同帧数的统一
-        rb.MovePosition(rb.position + movementInput * speed * Time.deltaTime);
+        rb.MovePosition(rb.position + movementInput * (speed * Time.deltaTime));
     }
 
     private void SwitchAnimation()
     {
         foreach (Animator anim in animators)
         {
-            anim.SetBool("isMoving", isMoving);
+            anim.SetBool(IsMoving, isMoving);
 
             // 切换使用工具时，工具的朝向
-            anim.SetFloat("mouseX", mouseX);
-            anim.SetFloat("mouseY", mouseY);
+            anim.SetFloat(MouseX, mouseX);
+            anim.SetFloat(MouseY, mouseY);
 
             if (isMoving)
             {
-                anim.SetFloat("InputX", inputX);
-                anim.SetFloat("InputY", inputY);
+                anim.SetFloat(InputX, inputX);
+                anim.SetFloat(InputY, inputY);
             }
         }
     }

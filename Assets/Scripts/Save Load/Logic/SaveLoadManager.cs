@@ -84,10 +84,10 @@ namespace Y.Save
         private void Save(int index)
         {
             DataSlot data = new DataSlot();
-            foreach (ISavable saveable in savableList)
+            foreach (ISavable savable in savableList)
             {
                 // 把每一个需要保存的【物体对应的 guid】和【物体的具体的数据】对应保存到存档数据大集合中
-                data.dataDict.Add(saveable.GUID, saveable.GenerateSaveData());
+                data.dataDict.Add(savable.GUID, savable.GenerateSaveData());
             }
 
             dataSlots[index] = data;

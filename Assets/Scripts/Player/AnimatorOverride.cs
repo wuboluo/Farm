@@ -7,6 +7,7 @@ public class AnimatorOverride : MonoBehaviour
 {
     public SpriteRenderer holdItem;
 
+    // 此列表为身体各部分在不同状态下使用的animator。例如胳膊在跑步、浇水、举起东西等
     [Header("各部分动画列表")] public List<AnimatorType> animatorTypes;
 
     private readonly Dictionary<string, Animator> animatorNameDict = new();
@@ -57,20 +58,24 @@ public class AnimatorOverride : MonoBehaviour
         holdItem.enabled = false;
     }
 
+    /// 当点击物品时，判断此物品类型，用于切换动画 
     private void OnItemSelectedEvent(ItemDetails details, bool isSelected)
     {
         // todo: 不同的工具返回不同动画 在这里补全
+        // 判断物品类型
         PartType currentType = details.itemType switch
         {
             ItemType.Seed => PartType.Carry,
             ItemType.Commodity => PartType.Carry,
+            ItemType.Furniture => PartType.Carry,
+            
             ItemType.HoeTool => PartType.Hoe,
             ItemType.WaterTool => PartType.Water,
             ItemType.CollectTool => PartType.Collect,
             ItemType.ChopTool => PartType.Chop,
             ItemType.BreakTool => PartType.Break,
             ItemType.ReapTool => PartType.Reap,
-            ItemType.Furniture => PartType.Carry,
+            
             _ => PartType.None
         };
 
@@ -101,17 +106,23 @@ public class AnimatorOverride : MonoBehaviour
 
     private void SwitchAnimator(PartType partType)
     {
-        // 例如：
-        // 胳膊存在举起东西和没有举起东西的两组动画
-        // animatorTypes: 设置了胳膊在举起和不举起时的两组动画文件
-
-        // 遍历配置好的不同状态下的动画，根据当前的人物状态（举起或不举起或其它）去寻找对应的动画，为了实现在举着东西的时候抬手，否则自然下垂
         // 注意此时 item.partName是要和 animator文件名称一致，从开始存入的字典里面找到对应的 animator组件，替换为新状态下的 animator，实现动作切换
-        foreach (AnimatorType item in animatorTypes)
-            if (item.partType == partType)
-                animatorNameDict[item.partName.ToString()].runtimeAnimatorController = item.overrideController;
 
-            else if (item.partType == PartType.None)
+        // 遍历所有身体部分在不同状态下对应的 animator
+        foreach (AnimatorType item in animatorTypes)
+        {
+            // 如果当前使用的道具存在独立的一组动画
+            if (item.partType == partType)
+            {
+                // 那么就把身体各部分的animator都更新
                 animatorNameDict[item.partName.ToString()].runtimeAnimatorController = item.overrideController;
+            }
+            // 如果不存在单独的一组动画
+            else if (item.partType == PartType.None)
+            {
+                // 就恢复到默认状态
+                animatorNameDict[item.partName.ToString()].runtimeAnimatorController = item.overrideController;
+            }
+        }
     }
 }

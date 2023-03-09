@@ -9,20 +9,16 @@ namespace Y.Inventory
     {
         public ItemTooltip itemTooltip;
 
-        [Header("拖拽图片")] 
-        public Image dragItemImage;
-        
-        [Header("玩家背包UI")] 
-        [SerializeField] private GameObject bagUI;
+        [Header("拖拽图片")] public Image dragItemImage;
+
+        [Header("玩家背包UI")] [SerializeField] private GameObject bagUI;
         private bool bagOpened;
 
-        [Header("通用背包")] 
-        [SerializeField] private GameObject baseBag;
+        [Header("通用背包")] [SerializeField] private GameObject baseBag;
         public GameObject shopSlotPrefab;
         public GameObject boxSlotPrefab;
 
-        [Header("交易UI")] 
-        public TradeUI tradeUI;
+        [Header("交易UI")] public TradeUI tradeUI;
         public TextMeshProUGUI playerMoney;
 
         [SerializeField] private SlotUI[] playerSlots;
@@ -136,17 +132,24 @@ namespace Y.Inventory
         {
             switch (location)
             {
+                // 更新背包UI数据
                 case InventoryLocation.Player:
+                    // 遍历背包中的所有格子
                     for (int i = 0; i < playerSlots.Length; i++)
+                    {
+                        // 检查背包数据SO中，对应序号是否存在物品
                         if (list[i].itemAmount > 0)
                         {
+                            // 将背包数据SO中的物品信息更新给格子UI
                             ItemDetails item = InventoryManager.Instance.GetItemDetails(list[i].itemID);
                             playerSlots[i].UpdateSlot(item, list[i].itemAmount);
                         }
                         else
                         {
+                            // 不存在物品就清空格子
                             playerSlots[i].UpdateEmptySlot();
                         }
+                    }
 
                     break;
 
@@ -164,21 +167,22 @@ namespace Y.Inventory
 
                     break;
             }
-            
+
             playerMoney.text = InventoryManager.Instance.playerMoney.ToString();
         }
 
-        // 打开背包 UI
+        /// 打开背包 UI
         public void OpenBagUI()
         {
             bagOpened = !bagOpened;
             bagUI.SetActive(bagOpened);
         }
 
-        // 更新 slot高亮显示
+        /// 更新Slot高亮显示
         public void UpdateSlotHighlight(int index)
         {
             foreach (SlotUI slot in playerSlots)
+            {
                 if (slot.isSelected && slot.slotIndex == index)
                 {
                     slot.slotHighlight.gameObject.SetActive(true);
@@ -188,6 +192,7 @@ namespace Y.Inventory
                     slot.isSelected = false;
                     slot.slotHighlight.gameObject.SetActive(false);
                 }
+            }
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Y.Inventory
         // 记录场景里的 item
         private Dictionary<string, List<SceneItem>> sceneItemDict = new();
 
-        private Transform PlayerTransform => FindObjectOfType<Player>().transform;
+        private static Transform PlayerTransform => FindObjectOfType<Player>().transform;
 
         private void Start()
         {

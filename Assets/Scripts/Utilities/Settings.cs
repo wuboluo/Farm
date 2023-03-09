@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class Settings
+public static class Settings
 {
     // -------------------- 可半透明物体的透明度设置（树，灌木丛等）
     public const float itemFadeDuration = 0.35f;
@@ -39,12 +39,13 @@ public class Settings
     
     // -------------------- 灯光
     public const float lightChangeDuration = 25f;
-    public static TimeSpan morningTime = new TimeSpan(5, 0, 0);
-    public static TimeSpan nightTime = new TimeSpan(19, 0, 0);
+    public static TimeSpan morningTime = new(5, 0, 0);
+    public static TimeSpan nightTime = new(19, 0, 0);
     
     
     // -------------------- player 初始坐标
-    public static Vector3 playerStartPos = new Vector3(-12, -16.5f, 0);
+    public static Vector3 playerStartPos = new(-12, -16.5f, 0);
 
-    public static int playerStartMoney = 100;
+    // -------------------- player 初始金钱
+    public const int playerStartMoney = 100;
 }
