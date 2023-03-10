@@ -60,8 +60,10 @@ namespace Y.Transition
 
         public GameSaveData GenerateSaveData()
         {
-            GameSaveData saveData = new GameSaveData();
-            saveData.dataSceneName = SceneManager.GetActiveScene().name;
+            GameSaveData saveData = new GameSaveData
+            {
+                dataSceneName = SceneManager.GetActiveScene().name
+            };
 
             return saveData;
         }
@@ -103,26 +105,36 @@ namespace Y.Transition
                 StartCoroutine(Transition(sceneToGo, positionToGo));
         }
 
-        // 场景切换
+        /// 场景切换
         private IEnumerator Transition(string sceneName, Vector3 targetPosition)
         {
+            // 卸载场景前事件通知
             EventHandler.CallBeforeSceneUnloadEvent();
             yield return Fade(1);
+            
+            // 卸载当前激活的场景
             yield return SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
-
+            // 加载目标场景并激活
             yield return LoadSceneSetActive(sceneName);
+            
+            // 把人物移动到新场景的“出入口位置“
             EventHandler.CallMoveToPosition(targetPosition);
+            // 加载场景后事件通知
             EventHandler.CallAfterSceneLoadedEvent();
             yield return Fade(0);
         }
 
-        // 加载场景并设置为激活
-        public IEnumerator LoadSceneSetActive(string sceneName)
+        /// 加载场景并设置为激活
+        private static IEnumerator LoadSceneSetActive(string sceneName)
         {
+            // LoadSceneMode.Additive 在原有场景下叠加一个场景
             yield return SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
 
-            Scene newScene = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);
-
+            // 获取当前场景中加载的场景数量
+            int loadedSceneCount = SceneManager.sceneCount;
+            // 获得场景中的最后一个场景
+            Scene newScene = SceneManager.GetSceneAt(loadedSceneCount - 1);
+            // 将此场景设置为当前激活的场景
             SceneManager.SetActiveScene(newScene);
         }
 
@@ -134,10 +146,7 @@ namespace Y.Transition
 
             float speed = Mathf.Abs(fadeCanvasGroup.alpha - targetAlpha) / Settings.fadeDuration;
 
-            // Mathf.Approximately
-            // https://docs.unity.cn/cn/current/ScriptReference/Mathf.Approximately.html
             // 比较两个浮点值，如果它们相似，则返回 true。浮点不精确性使得使用相等运算符比较浮点数不精确。
-            // 例如，(1.0 == 10.0 / 10.0) 不会每次都返回 true。 Approximately() 比较两个浮点数，如果它们相互之间的差值处于较小值 (Epsilon) 范围内，则返回 true。
             while (!Mathf.Approximately(fadeCanvasGroup.alpha, targetAlpha))
             {
                 fadeCanvasGroup.alpha = Mathf.MoveTowards(fadeCanvasGroup.alpha, targetAlpha, speed * Time.deltaTime);

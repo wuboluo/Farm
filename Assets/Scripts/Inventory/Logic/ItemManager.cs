@@ -14,7 +14,7 @@ namespace Y.Inventory
         private Transform itemParent;
         private Dictionary<string, List<SceneFurniture>> sceneFurnitureDict = new();
 
-        // 记录场景里的 item
+        // 记录场景里的 item（场景名，场景中的所有物品列表）
         private Dictionary<string, List<SceneItem>> sceneItemDict = new();
 
         private static Transform PlayerTransform => FindObjectOfType<Player>().transform;
@@ -56,9 +56,11 @@ namespace Y.Inventory
             GetAllSceneItems();
             GetAllSceneFurniture();
 
-            GameSaveData saveData = new GameSaveData();
-            saveData.sceneItemDict = sceneItemDict;
-            saveData.sceneFurnitureDict = sceneFurnitureDict;
+            GameSaveData saveData = new GameSaveData
+            {
+                sceneItemDict = sceneItemDict,
+                sceneFurnitureDict = sceneFurnitureDict
+            };
 
             return saveData;
         }
@@ -117,23 +119,30 @@ namespace Y.Inventory
             item.GetComponent<ItemBounce>().InitBounceItem(mousePos, dir);
         }
 
-        // 获取当前场景中所有 item
+        /// 更新/添加当前场景里的所有物品
         private void GetAllSceneItems()
         {
-            // 通过 item类型找到所有 item物体
-            List<SceneItem> currentSceneItems = FindObjectsOfType<Item>().Select(
-                item => new SceneItem {itemID = item.itemID, position = new SerializableVector3(item.transform.position)}).ToList();
+            // 存储当前场景里的所有物品
+            List<SceneItem> currentSceneItems = FindObjectsOfType<Item>().Select(item => new SceneItem
+            {
+                itemID = item.itemID,
+                position = new SerializableVector3(item.transform.position)
+            }).ToList();
 
             // 如果字典中包含当前激活的场景，则更新场景里物体
             if (sceneItemDict.ContainsKey(SceneManager.GetActiveScene().name))
+            {
                 sceneItemDict[SceneManager.GetActiveScene().name] = currentSceneItems;
+            }
             // 否则，将此场景和里面的物体添加进字典
             else
+            {
                 sceneItemDict.Add(SceneManager.GetActiveScene().name, currentSceneItems);
+            }
         }
 
 
-        // 刷新重建当前场景的 item
+        /// 刷新重建当前场景的 item
         private void RecreateAllItems()
         {
             if (sceneItemDict.TryGetValue(SceneManager.GetActiveScene().name, out List<SceneItem> currentSceneItems))

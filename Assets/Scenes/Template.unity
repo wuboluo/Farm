@@ -1541,7 +1541,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05d0b4765f9c4197a34004e99bd20e81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneToGo: 
+  sceneToGo: PersistentScene
   positionToGo: {x: 0, y: 0, z: 0}
 --- !u!61 &1434103395
 BoxCollider2D:

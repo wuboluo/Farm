@@ -55,7 +55,7 @@ public class AnimatorType
 }
 
 
-// todo: 为什么说 v3不能保存人物位置？
+// Unity不支持序列化 Vector3，所以要自己实现一个 可序列化的类
 [Serializable]
 public class SerializableVector3
 {

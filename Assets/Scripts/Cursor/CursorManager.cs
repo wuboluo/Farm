@@ -30,7 +30,7 @@ public class CursorManager : MonoBehaviour
     private Vector3 mouseWorldPos;
 
 
-    private Transform PlayerTransform => FindObjectOfType<Player>().transform;
+    private static Transform PlayerTransform => FindObjectOfType<Player>().transform;
 
     private void Start()
     {
