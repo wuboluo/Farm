@@ -8,7 +8,9 @@ namespace Y.Inventory
 {
     public class ItemManager : MonoBehaviour, ISavable
     {
+        // 物品模板
         public Item itemPrefab;
+        // 被扔出来的物品模板，附带影子
         public Item bouncePrefab;
 
         private Transform itemParent;
@@ -97,7 +99,7 @@ namespace Y.Inventory
             RebuildFurniture();
         }
 
-        // 在指定坐标位置生成物品
+        /// 在指定坐标位置生成物品
         private void OnInstantiateItemInScene(int id, Vector3 pos)
         {
             Item item = Instantiate(bouncePrefab, pos, Quaternion.identity, itemParent);
@@ -107,15 +109,19 @@ namespace Y.Inventory
         }
 
 
-        // 扔东西
+        /// 扔东西
         private void OnDropItem(int id, Vector3 mousePos, ItemType itemType)
         {
+            // 种子不允许扔掉
             if (itemType == ItemType.Seed) return;
 
+            // 生成一个可扔的物品模板，设置ID，初始化此物品
             Item item = Instantiate(bouncePrefab, PlayerTransform.position, Quaternion.identity, itemParent);
             item.itemID = id;
 
+            // 设置扔出的方向
             Vector3 dir = (mousePos - PlayerTransform.position).normalized;
+            // 初始化此物体飞行的目标点
             item.GetComponent<ItemBounce>().InitBounceItem(mousePos, dir);
         }
 

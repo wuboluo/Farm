@@ -56,6 +56,7 @@ public enum Season
     冬天
 }
 
+// 格子类型
 public enum GridType
 {
     Diggable,

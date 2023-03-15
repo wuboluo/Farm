@@ -2,40 +2,49 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Y.Inventory;
+using Y.Map;
 
 public class CursorManager : MonoBehaviour
 {
+    // 使用工具、种子、物品和默认时的鼠标样式
     public Sprite normal, tool, seed, item;
+    // 当前场景的地图网格
     private Grid currentGrid;
-
+    // 当前选择的物品信息
     private ItemDetails currentItem;
 
-    // 当前鼠标图片
-    private Sprite currentSprite;
-    private RectTransform cursorCanvas;
-
+    
+    // 是否可以使用鼠标
     private bool cursorEnable;
-
-    private Image cursorImage;
+    // 鼠标当前所在的位置是否是可用的
     private bool cursorPositionValid;
 
-    // 建造
+    
+    // 鼠标所在画布
+    private RectTransform cursorCanvas;
+    // 当前鼠标图片
+    private Sprite currentSprite;
+    // 鼠标图标UI
+    private Image cursorImage;
+    // 显示待建造的物品
     private Image buildImage;
 
-
-    // 鼠标检测
-    private Camera mainCam;
+    
+    // 鼠标位置对应的网格坐标
     private Vector3Int mouseGridPos;
-
+    // 鼠标世界坐标
     private Vector3 mouseWorldPos;
 
-
-    private static Transform PlayerTransform => FindObjectOfType<Player>().transform;
+    
+    // 主相机
+    private Camera mainCam;
+    // 玩家位置
+    private static Transform PlayerTransform;
 
     private void Start()
     {
         mainCam = Camera.main;
-
+        PlayerTransform = FindObjectOfType<Player>().transform;
         cursorCanvas = GameObject.FindGameObjectWithTag("CursorCanvas").GetComponent<RectTransform>();
         cursorImage = cursorCanvas.GetChild(0).GetComponent<Image>();
 
@@ -45,6 +54,8 @@ public class CursorManager : MonoBehaviour
 
         currentSprite = normal;
         SetCursorImage(normal);
+
+        Cursor.visible = false;
     }
 
     private void Update()
@@ -94,8 +105,10 @@ public class CursorManager : MonoBehaviour
     private void CheckPlayerInput()
     {
         if (Input.GetMouseButtonDown(0) && cursorPositionValid)
+        {
             // 执行方法
             EventHandler.CallMouseClickedEvent(mouseWorldPos, currentItem);
+        }
     }
 
     // 物品选择事件函数
@@ -137,7 +150,6 @@ public class CursorManager : MonoBehaviour
             }
         }
     }
-
 
     // 判断鼠标是否可用
     private void CheckCursorValid()
@@ -263,21 +275,20 @@ public class CursorManager : MonoBehaviour
         return false;
     }
     
-    // 是否与 UI互动
-    private bool InteractWithUI()
+    /// 是否与 UI 互动
+    private static bool InteractWithUI()
     {
         return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
     }
 
-    #region 设置鼠标样式
-
+    /// 设置鼠标样式
     private void SetCursorImage(Sprite sprite)
     {
         cursorImage.sprite = sprite;
         cursorImage.color = Color.white;
     }
 
-    // 设置鼠标可用
+    /// 设置鼠标可用
     private void SetCursorValid()
     {
         cursorPositionValid = true;
@@ -285,13 +296,11 @@ public class CursorManager : MonoBehaviour
         buildImage.color = new Color(1, 1, 1, 0.5f);
     }
 
-    // 设置鼠标不可用
+    /// 设置鼠标不可用
     private void SetCursorInValid()
     {
         cursorPositionValid = false;
         cursorImage.color = new Color(1, 0, 0, 0.5f);
         buildImage.color = new Color(1, 0, 0, 0.5f);
     }
-
-    #endregion
 }

@@ -95,11 +95,14 @@ public class SceneFurniture
 }
 
 
+// 格子属性
 [Serializable]
 public class TileProperty
 {
+    // 格子的网格坐标
     public Vector2Int tileCoordinate;
 
+    // 此格子类型，是用于挖坑、放东西、家具或者NPC障碍
     public GridType gridType;
     public bool boolType;
 }

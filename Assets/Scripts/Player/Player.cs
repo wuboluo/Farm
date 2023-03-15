@@ -18,8 +18,8 @@ public class Player : MonoBehaviour, ISavable
     private bool inputDisable;
 
     private bool isMoving;
-    private float mouseX, mouseY;
-    private float inputX, inputY;
+    private float mouseX, mouseY;   // 鼠标输入
+    private float inputX, inputY;   // 键盘输入
 
     private Vector2 movementInput;
     private Rigidbody2D rb;

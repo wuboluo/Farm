@@ -167,7 +167,7 @@ MonoBehaviour:
     ItemOnWorldSprite: {fileID: 0}
     itemDescription: 
     itemUseRadius: 0
-    canPickedup: 0
+    canPickedUp: 0
     canDropped: 0
     canCarried: 0
     itemPrice: 0

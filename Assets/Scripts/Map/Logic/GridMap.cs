@@ -6,6 +6,7 @@ using UnityEngine.Tilemaps;
 [ExecuteInEditMode]
 public class GridMap : MonoBehaviour
 {
+    // 需要存入的该场景的地图信息SO
     public MapDataSO mapData;
     public GridType gridType;
 
@@ -29,6 +30,7 @@ public class GridMap : MonoBehaviour
         {
             currentTilemap = GetComponent<Tilemap>();
 
+            // 更新瓦片信息
             UpdateTileProperties();
 
 #if UNITY_EDITOR
@@ -37,6 +39,8 @@ public class GridMap : MonoBehaviour
         }
     }
 
+    /// 把每个区域（挖坑、扔东西...等）所绘制的瓦片添加进此地图信息SO中
+    /// 同一个格子可能会被标记为很多种功能的区域，那么这个格子会被重复添加，但是type不同
     private void UpdateTileProperties()
     {
         // 获得瓦片地图中真实有瓦片的范围
